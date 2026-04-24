@@ -226,26 +226,51 @@ export const AdminDashboardPage = () => {
               </h2>
               <p class="text-maroon/60 text-sm mt-1">Recent enquiries from website visitors</p>
             </div>
-            <button id="refresh-enquiries" class="px-4 py-2 rounded-full bg-maroon text-gold hover:bg-maroondark transition text-sm">
-              <i class="fas fa-sync-alt mr-1"></i>
-              Refresh
-            </button>
+            <div class="flex items-center gap-2 flex-wrap">
+              {/* Filter buttons (NEW) */}
+              <div class="inline-flex bg-ivory rounded-full p-1 border border-maroon/10">
+                <button
+                  data-enq-filter="all"
+                  class="enq-filter-btn active px-3 py-1.5 rounded-full text-xs font-semibold transition"
+                >
+                  All <span id="enq-count-all" class="ml-1 text-[10px] opacity-80">0</span>
+                </button>
+                <button
+                  data-enq-filter="lawns"
+                  class="enq-filter-btn px-3 py-1.5 rounded-full text-xs font-semibold transition"
+                >
+                  <i class="fas fa-leaf mr-1"></i>Lawns <span id="enq-count-lawns" class="ml-1 text-[10px] opacity-80">0</span>
+                </button>
+                <button
+                  data-enq-filter="guesthouse"
+                  class="enq-filter-btn px-3 py-1.5 rounded-full text-xs font-semibold transition"
+                >
+                  <i class="fas fa-bed mr-1"></i>Guest House <span id="enq-count-guesthouse" class="ml-1 text-[10px] opacity-80">0</span>
+                </button>
+              </div>
+              <button id="refresh-enquiries" class="px-4 py-2 rounded-full bg-maroon text-gold hover:bg-maroondark transition text-sm">
+                <i class="fas fa-sync-alt mr-1"></i>
+                Refresh
+              </button>
+            </div>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full">
               <thead class="bg-ivory">
                 <tr>
-                  <th class="text-left px-5 py-3 text-maroon text-xs tracking-wider uppercase font-semibold">Date</th>
-                  <th class="text-left px-5 py-3 text-maroon text-xs tracking-wider uppercase font-semibold">Name</th>
-                  <th class="text-left px-5 py-3 text-maroon text-xs tracking-wider uppercase font-semibold">Phone</th>
-                  <th class="text-left px-5 py-3 text-maroon text-xs tracking-wider uppercase font-semibold">Event Date</th>
-                  <th class="text-left px-5 py-3 text-maroon text-xs tracking-wider uppercase font-semibold">Guests</th>
-                  <th class="text-left px-5 py-3 text-maroon text-xs tracking-wider uppercase font-semibold">Message</th>
-                  <th class="text-left px-5 py-3 text-maroon text-xs tracking-wider uppercase font-semibold">Action</th>
+                  <th class="text-left px-4 py-3 text-maroon text-[11px] tracking-wider uppercase font-semibold">Received</th>
+                  <th class="text-left px-4 py-3 text-maroon text-[11px] tracking-wider uppercase font-semibold">Name</th>
+                  <th class="text-left px-4 py-3 text-maroon text-[11px] tracking-wider uppercase font-semibold">Phone</th>
+                  <th class="text-left px-4 py-3 text-maroon text-[11px] tracking-wider uppercase font-semibold">Booking Type</th>
+                  <th class="text-left px-4 py-3 text-maroon text-[11px] tracking-wider uppercase font-semibold">Event / Check-in</th>
+                  <th class="text-left px-4 py-3 text-maroon text-[11px] tracking-wider uppercase font-semibold">Room Type</th>
+                  <th class="text-left px-4 py-3 text-maroon text-[11px] tracking-wider uppercase font-semibold text-center"># Rooms</th>
+                  <th class="text-left px-4 py-3 text-maroon text-[11px] tracking-wider uppercase font-semibold">Guests</th>
+                  <th class="text-left px-4 py-3 text-maroon text-[11px] tracking-wider uppercase font-semibold">Action</th>
                 </tr>
               </thead>
               <tbody id="enquiries-tbody">
-                <tr><td colspan={7} class="text-center py-10 text-maroon/50">Loading enquiries...</td></tr>
+                <tr><td colspan={9} class="text-center py-10 text-maroon/50">Loading enquiries...</td></tr>
               </tbody>
             </table>
           </div>

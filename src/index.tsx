@@ -75,9 +75,9 @@ app.get('/', (c) => {
 
 app.get('/admin', (c) => {
   if (checkAuth(c)) {
-    return c.render(<AdminDashboardPage />, { title: 'Admin Dashboard — Raj Palace & Lawns' })
+    return c.render(<AdminDashboardPage />, { title: 'Admin Dashboard — Raj Palace LAWNS & GUEST HOUSE' })
   }
-  return c.render(<AdminLoginPage />, { title: 'Admin Login — Raj Palace & Lawns' })
+  return c.render(<AdminLoginPage />, { title: 'Admin Login — Raj Palace LAWNS & GUEST HOUSE' })
 })
 
 /* ---------- Public API: Availability ---------- */
@@ -106,13 +106,14 @@ app.get('/api/availability', async (c) => {
 // POST /api/enquiries — Submit enquiry from public site
 app.post('/api/enquiries', async (c) => {
   const body = await c.req.json().catch(() => ({}))
-  const { name, phone, date, guests, message } = body
+  const { name, phone, date, guests, message, bookingType, roomType, numRooms } = body
 
   if (!name || !phone) {
     return c.json({ ok: false, error: 'Name and phone are required.' }, 400)
   }
 
   const id = `enq_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+  const normType = bookingType === 'guesthouse' ? 'guesthouse' : 'lawns'
   const enquiry = {
     id,
     name: String(name).trim().slice(0, 120),
@@ -120,6 +121,9 @@ app.post('/api/enquiries', async (c) => {
     date: date ? String(date).trim().slice(0, 20) : '',
     guests: guests ? String(guests).trim().slice(0, 40) : '',
     message: message ? String(message).trim().slice(0, 500) : '',
+    bookingType: normType,
+    roomType: roomType ? String(roomType).trim().slice(0, 40) : '',
+    numRooms: numRooms ? String(numRooms).trim().slice(0, 10) : '',
     createdAt: new Date().toISOString(),
     status: 'new'
   }
@@ -162,10 +166,14 @@ app.get('/api/admin/me', async (c) => {
 /* ---------- Admin API: Bookings ---------- */
 
 // Set status for a specific date
-// POST /api/admin/dates { date: 'YYYY-MM-DD', status: 'booked|blocked|available' }
+// POST /api/admin/dates { date, status, note, bookingType }
+// Storage format (backwards compatible):
+//   "status"                       — legacy, no note, type defaults to 'lawns'
+//   "status|note"                  — legacy with note
+//   "status|note|bookingType"      — new, with type tag (lawns | guesthouse)
 app.post('/api/admin/dates', requireAuth, async (c) => {
   const body = await c.req.json().catch(() => ({}))
-  const { date, status, note } = body
+  const { date, status, note, bookingType } = body
 
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return c.json({ ok: false, error: 'Invalid date format.' }, 400)
@@ -181,7 +189,10 @@ app.post('/api/admin/dates', requireAuth, async (c) => {
     } catch (e) {}
     memoryStore.delete(`date:${date}`)
   } else {
-    const payload = note ? `${status}|${note}` : status
+    const normType = bookingType === 'guesthouse' ? 'guesthouse' : 'lawns'
+    const safeNote = (note || '').toString().replace(/\|/g, '/')
+    // Always write 3-part form for new entries
+    const payload = `${status}|${safeNote}|${normType}`
     await kvPut(c, `date:${date}`, payload)
   }
   return c.json({ ok: true })

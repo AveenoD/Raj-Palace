@@ -17,7 +17,7 @@ export const HomePage = () => {
                   Raj Palace
                 </span>
                 <span class="text-[10px] md:text-xs tracking-[0.2em] uppercase nav-subbrand">
-                  & Lawns
+                  LAWNS &amp; Guest House
                 </span>
               </div>
             </a>
@@ -81,11 +81,19 @@ export const HomePage = () => {
       <header id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 z-0">
           <div class="hero-slideshow absolute inset-0">
+            {/* Wedding venue images */}
             <div class="hero-slide active" style="background-image:url('/static/images/facade-night.jpg')"></div>
             <div class="hero-slide" style="background-image:url('/static/images/lawn-aerial.jpg')"></div>
             <div class="hero-slide" style="background-image:url('/static/images/hall-wedding-setup.jpg')"></div>
+            {/* Guest house images (NEW) */}
+            <div class="hero-slide" style="background-image:url('/static/images/guesthouse/gh-facade.jpg')"></div>
+            <div class="hero-slide" style="background-image:url('/static/images/guesthouse/gh-king-room-1.jpg')"></div>
+            {/* More wedding venue images */}
             <div class="hero-slide" style="background-image:url('/static/images/saptapadi-mandap.jpg')"></div>
             <div class="hero-slide" style="background-image:url('/static/images/facade-sky.jpg')"></div>
+            {/* More guest house images */}
+            <div class="hero-slide" style="background-image:url('/static/images/guesthouse/gh-double-room-1.jpg')"></div>
+            <div class="hero-slide" style="background-image:url('/static/images/guesthouse/gh-interior-arch.jpg')"></div>
           </div>
           <div class="absolute inset-0 bg-gradient-to-b from-maroondark/70 via-maroondark/50 to-maroondark/90"></div>
           <div class="absolute inset-0 hero-vignette"></div>
@@ -96,28 +104,30 @@ export const HomePage = () => {
             <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-gold mb-6">
               <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
               <span class="text-gold text-xs md:text-sm tracking-[0.25em] uppercase font-medium">
-                Luxury Wedding Destination · Nashik
+                Wedding Venue &amp; Guest House · Nashik
               </span>
             </div>
           </div>
 
           <h1 class="reveal-up font-display text-white font-bold leading-[1.05] tracking-tight text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl mb-6">
-            Host Grand Weddings at
+            Host Grand Weddings &amp; Comfortable Stays at
             <span class="block mt-2 bg-gradient-to-r from-goldlight via-gold to-goldlight bg-clip-text text-transparent italic">
-              Raj Palace &amp; Lawns
+              Raj Palace
             </span>
           </h1>
 
           <p class="reveal-up font-serif text-ivory/90 text-lg sm:text-xl md:text-2xl lg:text-3xl font-light italic max-w-3xl mx-auto mb-4">
-            Where timeless tradition meets royal celebration.
+            Where grand celebrations meet comfortable stays for your guests.
           </p>
 
-          <p class="reveal-up text-ivory/80 text-base sm:text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+          <p class="reveal-up text-ivory/80 text-base sm:text-lg md:text-xl mb-10 max-w-3xl mx-auto">
             <span class="text-gold font-semibold">5000 Guest Capacity</span>
-            <span class="mx-3 text-gold">·</span>
+            <span class="mx-2 md:mx-3 text-gold">|</span>
             Royal Indoor Hall
-            <span class="mx-3 text-gold">·</span>
-            Two Lush Green Lawns
+            <span class="mx-2 md:mx-3 text-gold">|</span>
+            2 Lush Lawns
+            <span class="mx-2 md:mx-3 text-gold">|</span>
+            Premium Guest House Rooms
           </p>
 
           <div class="reveal-up flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -131,7 +141,7 @@ export const HomePage = () => {
               </span>
             </a>
             <a
-              href="https://wa.me/919764490162?text=Hi,%20I%20want%20to%20book%20Raj%20Palace%20%26%20Lawns%20for%20a%20wedding."
+              href="https://wa.me/919764490162?text=Hi,%20I%20want%20to%20book%20Raj%20Palace%20(Wedding%20Venue%20%2F%20Guest%20House)."
               target="_blank"
               rel="noopener"
               class="group px-8 py-4 rounded-full glass-dark border-2 border-gold/60 text-ivory font-semibold text-base md:text-lg hover:bg-gold hover:text-maroon transition-all duration-300 min-w-[220px] flex items-center justify-center gap-2"
@@ -142,9 +152,9 @@ export const HomePage = () => {
           </div>
 
           {/* Hero stats */}
-          <div class="reveal-up grid grid-cols-3 gap-3 sm:gap-6 max-w-3xl mx-auto">
+          <div class="reveal-up grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-4xl mx-auto">
             <div class="glass-dark rounded-2xl px-3 py-4 sm:p-5 border border-gold/20">
-              <div class="font-display text-2xl sm:text-3xl md:text-4xl text-gold font-bold">5000</div>
+              <div class="font-display text-2xl sm:text-3xl md:text-4xl text-gold font-bold">5000+</div>
               <div class="text-ivory/80 text-[10px] sm:text-xs md:text-sm tracking-wider uppercase mt-1">Guest Capacity</div>
             </div>
             <div class="glass-dark rounded-2xl px-3 py-4 sm:p-5 border border-gold/20">
@@ -152,8 +162,12 @@ export const HomePage = () => {
               <div class="text-ivory/80 text-[10px] sm:text-xs md:text-sm tracking-wider uppercase mt-1">Green Lawns</div>
             </div>
             <div class="glass-dark rounded-2xl px-3 py-4 sm:p-5 border border-gold/20">
-              <div class="font-display text-2xl sm:text-3xl md:text-4xl text-gold font-bold">24/7</div>
-              <div class="text-ivory/80 text-[10px] sm:text-xs md:text-sm tracking-wider uppercase mt-1">Day &amp; Night</div>
+              <div class="font-display text-2xl sm:text-3xl md:text-4xl text-gold font-bold">16</div>
+              <div class="text-ivory/80 text-[10px] sm:text-xs md:text-sm tracking-wider uppercase mt-1">Guest House Rooms</div>
+            </div>
+            <div class="glass-dark rounded-2xl px-3 py-4 sm:p-5 border border-gold/20">
+              <div class="font-display text-2xl sm:text-3xl md:text-4xl text-gold font-bold">24</div>
+              <div class="text-ivory/80 text-[10px] sm:text-xs md:text-sm tracking-wider uppercase mt-1">Hour Stay सुविधा</div>
             </div>
           </div>
         </div>
@@ -275,6 +289,149 @@ export const HomePage = () => {
         </div>
       </section>
 
+      {/* ===== GUEST HOUSE SECTION (NEW) ===== */}
+      <section id="guesthouse" class="relative py-20 md:py-28 bg-gradient-to-b from-ivory via-ivorydark to-ivory overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 rounded-full bg-gold/5 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-maroon/5 blur-3xl pointer-events-none"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-14 reveal-up">
+            <span class="inline-block text-gold text-sm tracking-[0.3em] uppercase font-medium mb-4">
+              ✦ New · Now Open ✦
+            </span>
+            <h2 class="font-display text-maroon text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
+              Stay at <em class="text-gold italic">Raj Palace Guest House</em>
+            </h2>
+            <p class="text-maroon/70 text-lg max-w-2xl mx-auto">
+              Comfortable premium rooms right next to the venue — the perfect stay solution for your wedding guests &amp; families.
+            </p>
+          </div>
+
+          <div class="grid lg:grid-cols-2 gap-8 items-center mb-14">
+            {/* Left: Hero Image */}
+            <div class="reveal-up relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] border-4 border-gold/20">
+              <img
+                loading="lazy"
+                src="/static/images/guesthouse/gh-facade.jpg"
+                alt="Raj Palace Guest House facade"
+                class="absolute inset-0 w-full h-full object-cover"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-maroondark/70 via-transparent to-transparent"></div>
+              <div class="absolute bottom-5 left-5 right-5">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold/90 text-maroon text-xs font-bold tracking-wider uppercase mb-2">
+                  <i class="fas fa-bed"></i>
+                  16 Rooms Available
+                </div>
+                <h3 class="font-display text-white text-2xl md:text-3xl font-bold">
+                  Raj Palace Guest House
+                </h3>
+              </div>
+            </div>
+
+            {/* Right: Content */}
+            <div class="reveal-up">
+              <ul class="space-y-3 mb-7">
+                {[
+                  { icon: 'fa-crown', text: 'Comfortable Premium Rooms with modern amenities' },
+                  { icon: 'fa-users', text: 'Ideal stay for wedding guests &amp; out-of-town families' },
+                  { icon: 'fa-expand', text: 'Spacious &amp; spotlessly clean rooms' },
+                  { icon: 'fa-clock', text: '24-Hour stay convenience &mdash; check-in 10 AM, check-out 10 AM next day' }
+                ].map((item) => (
+                  <li class="flex items-start gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-gold to-golddark text-maroon flex items-center justify-center flex-shrink-0 shadow">
+                      <i class={`fas ${item.icon} text-sm`}></i>
+                    </span>
+                    <span class="text-maroon text-base md:text-lg pt-1" dangerouslySetInnerHTML={{ __html: item.text }}></span>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="grid grid-cols-2 gap-4 mb-7">
+                <div class="group bg-white rounded-2xl p-5 border border-maroon/10 hover:border-gold/50 hover:shadow-xl transition">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-gold to-golddark text-maroon flex items-center justify-center">
+                      <i class="fas fa-chess-king"></i>
+                    </div>
+                    <div class="font-display text-3xl font-bold text-maroon">8</div>
+                  </div>
+                  <div class="font-display text-lg font-semibold text-maroon">Master King Rooms</div>
+                  <div class="text-maroon/60 text-xs mt-1">Full-size premium rooms</div>
+                </div>
+                <div class="group bg-white rounded-2xl p-5 border border-maroon/10 hover:border-gold/50 hover:shadow-xl transition">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-maroon to-maroondark text-gold flex items-center justify-center">
+                      <i class="fas fa-bed"></i>
+                    </div>
+                    <div class="font-display text-3xl font-bold text-maroon">12</div>
+                  </div>
+                  <div class="font-display text-lg font-semibold text-maroon">Double Bed Rooms</div>
+                  <div class="text-maroon/60 text-xs mt-1">Comfortable &amp; cozy</div>
+                </div>
+              </div>
+
+              {/* Check-in/out highlight */}
+              <div class="bg-gradient-to-r from-maroon to-maroondark text-white rounded-2xl p-5 mb-6 shadow-xl">
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                  <div class="flex items-center gap-3">
+                    <i class="fas fa-sign-in-alt text-gold text-xl"></i>
+                    <div>
+                      <div class="text-gold text-[10px] tracking-[0.2em] uppercase">Check-In</div>
+                      <div class="font-display font-bold">10:00 AM</div>
+                    </div>
+                  </div>
+                  <div class="text-gold text-xl hidden sm:block">→</div>
+                  <div class="flex items-center gap-3">
+                    <i class="fas fa-sign-out-alt text-gold text-xl"></i>
+                    <div>
+                      <div class="text-gold text-[10px] tracking-[0.2em] uppercase">Check-Out</div>
+                      <div class="font-display font-bold">10:00 AM (next day)</div>
+                    </div>
+                  </div>
+                  <div class="w-full sm:w-auto px-3 py-1.5 rounded-full bg-gold/20 border border-gold/40 text-gold text-xs font-semibold text-center">
+                    <i class="fas fa-clock mr-1"></i>
+                    24-Hour Stay
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-gold/10 border-l-4 border-gold rounded-r-xl p-4 mb-6">
+                <p class="text-maroon font-serif italic text-base md:text-lg">
+                  "Perfect stay solution for wedding families &amp; guests."
+                </p>
+              </div>
+
+              <button
+                type="button"
+                id="gh-book-btn"
+                class="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-gold to-goldlight text-maroon font-semibold shadow-xl hover:shadow-gold/50 hover:scale-105 transition"
+              >
+                <i class="fas fa-bed"></i>
+                Book Guest Rooms Now
+              </button>
+            </div>
+          </div>
+
+          {/* Room Gallery Preview */}
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 reveal-up">
+            {[
+              { img: 'gh-king-room-1.jpg', label: 'Master King Room' },
+              { img: 'gh-king-room-2.jpg', label: 'Premium Suite' },
+              { img: 'gh-double-room-1.jpg', label: 'Double Bed Room' },
+              { img: 'gh-double-room-2.jpg', label: 'Deluxe Double' },
+              { img: 'gh-interior-arch.jpg', label: 'Lobby Interior' }
+            ].map((r) => (
+              <div class="group relative rounded-2xl overflow-hidden aspect-square shadow-md hover:shadow-2xl cursor-pointer" onclick={`openLightbox('/static/images/guesthouse/${r.img}')`}>
+                <img loading="lazy" src={`/static/images/guesthouse/${r.img}`} alt={r.label} class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div class="absolute inset-0 bg-gradient-to-t from-maroondark/90 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
+                <div class="absolute bottom-3 left-3 right-3">
+                  <div class="text-white font-display text-sm md:text-base font-semibold drop-shadow-lg">{r.label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ===== FEATURES GRID ===== */}
       <section id="features" class="relative py-20 md:py-28 bg-gradient-to-b from-ivory to-ivorydark">
         <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image:radial-gradient(circle at 1px 1px, #4A0E0E 1px, transparent 0); background-size:32px 32px;"></div>
@@ -327,6 +484,28 @@ export const HomePage = () => {
         <div class="absolute inset-0 bg-gradient-to-b from-maroondark via-maroondark/90 to-maroondark"></div>
 
         <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Booking type toggle (NEW) */}
+          <div class="availability-booking-toggle-wrap reveal-up">
+            <div class="availability-booking-toggle" role="group" aria-label="Booking type">
+              <button
+                type="button"
+                class="availability-booking-toggle-btn"
+                data-booking-type="lawns"
+              >
+                <i class="fas fa-leaf"></i>
+                Raj Palace Lawns
+              </button>
+              <button
+                type="button"
+                class="availability-booking-toggle-btn active"
+                data-booking-type="guesthouse"
+              >
+                <i class="fas fa-bed"></i>
+                Guest House
+              </button>
+            </div>
+          </div>
+
           <div class="text-center mb-12 reveal-up">
             <span class="inline-block text-gold text-sm tracking-[0.3em] uppercase font-medium mb-4">
               ✦ Live Availability ✦
@@ -428,6 +607,31 @@ export const HomePage = () => {
 
           <form id="enquiry-form" class="p-6 space-y-4">
             <input type="hidden" name="date" id="enquiry-date" />
+
+            {/* Booking Type Toggle (NEW) */}
+            <div>
+              <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Booking Type</label>
+              <div class="grid grid-cols-2 gap-2" id="booking-type-toggle">
+                <button
+                  type="button"
+                  data-booking-type="lawns"
+                  class="booking-type-btn active px-3 py-3 rounded-xl border-2 text-sm font-semibold transition text-left"
+                >
+                  <i class="fas fa-leaf mr-1.5"></i>
+                  Lawns / Hall
+                </button>
+                <button
+                  type="button"
+                  data-booking-type="guesthouse"
+                  class="booking-type-btn px-3 py-3 rounded-xl border-2 text-sm font-semibold transition text-left"
+                >
+                  <i class="fas fa-bed mr-1.5"></i>
+                  Guest House
+                </button>
+              </div>
+              <input type="hidden" name="bookingType" id="enquiry-booking-type" value="lawns" />
+            </div>
+
             <div>
               <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Your Name</label>
               <input
@@ -450,7 +654,7 @@ export const HomePage = () => {
               />
             </div>
             <div>
-              <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Wedding Date</label>
+              <label id="enquiry-date-label" class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Wedding Date</label>
               <input
                 id="enquiry-date-display"
                 type="text"
@@ -458,11 +662,12 @@ export const HomePage = () => {
                 class="w-full px-4 py-3 rounded-xl border border-maroon/20 bg-ivory font-semibold text-maroon"
               />
             </div>
-            <div>
+
+            {/* Lawns-only fields */}
+            <div class="booking-fields booking-fields-lawns">
               <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Expected Guests</label>
               <select
                 name="guests"
-                required
                 class="w-full px-4 py-3 rounded-xl border border-maroon/20 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition bg-white"
               >
                 <option value="">Select guest count</option>
@@ -473,6 +678,45 @@ export const HomePage = () => {
                 <option>More than 5000</option>
               </select>
             </div>
+
+            {/* Guest House fields (NEW) */}
+            <div class="booking-fields booking-fields-guesthouse hidden space-y-4">
+              <div>
+                <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Room Type</label>
+                <select
+                  name="roomType"
+                  class="w-full px-4 py-3 rounded-xl border border-maroon/20 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition bg-white"
+                >
+                  <option value="">Select room type</option>
+                  <option value="Master King Room">Master King Room (Premium)</option>
+                  <option value="Double Bed Room">Double Bed Room</option>
+                  <option value="Mixed (both)">Mixed (both types)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Number of Rooms</label>
+                <input
+                  type="number"
+                  name="numRooms"
+                  min="1"
+                  max="16"
+                  class="w-full px-4 py-3 rounded-xl border border-maroon/20 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition bg-white"
+                  placeholder="e.g. 4"
+                />
+              </div>
+              <div class="bg-gold/10 border border-gold/30 rounded-xl p-3 text-xs text-maroon">
+                <div class="flex items-center gap-2 mb-1">
+                  <i class="fas fa-clock text-gold"></i>
+                  <span class="font-semibold tracking-wider uppercase">Stay Timings</span>
+                </div>
+                <div>
+                  <strong>Check-in:</strong> 10:00 AM &nbsp;·&nbsp;
+                  <strong>Check-out:</strong> 10:00 AM (next day) &nbsp;·&nbsp;
+                  24-hour stay
+                </div>
+              </div>
+            </div>
+
             <div>
               <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Message (Optional)</label>
               <textarea
@@ -569,8 +813,30 @@ export const HomePage = () => {
             </p>
           </div>
 
-          {/* Category Tabs */}
-          <div class="flex flex-wrap justify-center gap-2 mb-10 reveal-up">
+          {/* Venue Toggle (NEW) */}
+          <div class="flex justify-center mb-6 reveal-up">
+            <div class="inline-flex bg-white rounded-full p-1.5 shadow-md border border-maroon/10">
+              <button
+                type="button"
+                data-gallery-venue="lawns"
+                class="gallery-venue-btn active px-5 md:px-6 py-2.5 rounded-full text-sm font-semibold transition-all"
+              >
+                <i class="fas fa-leaf mr-1.5"></i>
+                Raj Palace Lawns
+              </button>
+              <button
+                type="button"
+                data-gallery-venue="guesthouse"
+                class="gallery-venue-btn px-5 md:px-6 py-2.5 rounded-full text-sm font-semibold transition-all"
+              >
+                <i class="fas fa-bed mr-1.5"></i>
+                Guest House
+              </button>
+            </div>
+          </div>
+
+          {/* Category Tabs (Lawns only — hidden when Guest House selected) */}
+          <div id="gallery-category-tabs" class="flex flex-wrap justify-center gap-2 mb-10 reveal-up">
             {[
               { key: 'all', label: 'All' },
               { key: 'hall', label: 'Indoor Hall' },
@@ -591,7 +857,7 @@ export const HomePage = () => {
             ))}
           </div>
 
-          {/* Masonry Grid */}
+          {/* Masonry Grid — Lawns */}
           <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             {[
               { img: 'hall-interior-red-chairs.jpg', cat: 'hall', span: 'row-span-2' },
@@ -623,6 +889,37 @@ export const HomePage = () => {
                   <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div class="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <i class="fas fa-expand"></i>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Masonry Grid — Guest House (NEW, hidden by default) */}
+          <div id="gallery-grid-guesthouse" class="hidden grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            {[
+              { img: 'gh-facade.jpg', label: 'Guest House Facade', span: 'col-span-2 row-span-2' },
+              { img: 'gh-king-room-1.jpg', label: 'Master King Room' },
+              { img: 'gh-king-room-2.jpg', label: 'Premium King Suite' },
+              { img: 'gh-double-room-1.jpg', label: 'Double Bed Room' },
+              { img: 'gh-double-room-2.jpg', label: 'Deluxe Double Room' },
+              { img: 'gh-interior-arch.jpg', label: 'Lobby Interior' }
+            ].map((g) => (
+              <div class={`gallery-item-gh ${g.span || ''}`}>
+                <div class="group relative rounded-2xl overflow-hidden cursor-pointer aspect-square h-full shadow-md hover:shadow-2xl transition-shadow">
+                  <img
+                    loading="lazy"
+                    src={`/static/images/guesthouse/${g.img}`}
+                    alt={g.label}
+                    class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    onclick={`openLightbox('/static/images/guesthouse/${g.img}')`}
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
+                  <div class="absolute bottom-3 left-3 right-3">
+                    <div class="text-white font-display text-sm md:text-base font-semibold drop-shadow-lg">{g.label}</div>
+                  </div>
+                  <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i class="fas fa-expand text-xs"></i>
                   </div>
                 </div>
               </div>

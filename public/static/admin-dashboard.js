@@ -14,7 +14,19 @@
     month: new Date().getMonth(),
     allDates: {},
     selected: null,
-    enquiries: []
+    enquiries: [],
+    enquiryFilter: 'all' // 'all' | 'lawns' | 'guesthouse'
+  };
+
+  /* Parse a KV date value into { status, note, bookingType } */
+  const parseDateValue = (raw) => {
+    if (!raw) return { status: 'available', note: '', bookingType: 'lawns' };
+    const parts = String(raw).split('|');
+    return {
+      status: parts[0] || 'available',
+      note: parts[1] || '',
+      bookingType: parts[2] === 'guesthouse' ? 'guesthouse' : 'lawns'
+    };
   };
 
   /* ---------- Helpers ---------- */
@@ -100,12 +112,18 @@
       const cell = document.createElement('button');
       cell.type = 'button';
       cell.className = 'admin-cal-day';
-      cell.textContent = d;
       cell.dataset.date = dateStr;
 
-      const raw = state.allDates[dateStr];
-      const status = raw ? raw.split('|')[0] : 'available';
-      cell.classList.add(status);
+      const parsed = parseDateValue(state.allDates[dateStr]);
+      cell.classList.add(parsed.status);
+
+      // Day number + tiny type badge (dot) for booked/blocked dates
+      if (parsed.status !== 'available' && state.allDates[dateStr]) {
+        const typeLetter = parsed.bookingType === 'guesthouse' ? 'G' : 'L';
+        cell.innerHTML = `<span class="cal-day-num">${d}</span><span class="cal-type-badge">${typeLetter}</span>`;
+      } else {
+        cell.textContent = d;
+      }
 
       const thisDate = new Date(state.year, state.month, d);
       thisDate.setHours(0, 0, 0, 0);
@@ -139,9 +157,8 @@
       return;
     }
 
-    const raw = state.allDates[state.selected];
-    const status = raw ? raw.split('|')[0] : 'available';
-    const note = raw && raw.includes('|') ? raw.split('|').slice(1).join('|') : '';
+    const parsed = parseDateValue(state.allDates[state.selected]);
+    const { status, note, bookingType } = parsed;
 
     const parts = state.selected.split('-');
     const dt = new Date(+parts[0], +parts[1] - 1, +parts[2]);
@@ -153,7 +170,22 @@
       <div class="mb-5">
         <div class="text-xs tracking-[0.25em] uppercase text-gold font-semibold mb-1">Selected Date</div>
         <div class="font-display text-xl font-bold text-maroon">${pretty}</div>
-        <div class="text-maroon/60 text-xs mt-1">Current: <span class="font-semibold capitalize">${status}</span></div>
+        <div class="text-maroon/60 text-xs mt-1">
+          Current: <span class="font-semibold capitalize">${status}</span>
+          ${status !== 'available' ? `· <span class="font-semibold">${bookingType === 'guesthouse' ? 'Guest House' : 'Lawns / Hall'}</span>` : ''}
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-xs tracking-wider uppercase text-maroon/60 font-semibold mb-2">Booking Type</label>
+        <div class="grid grid-cols-2 gap-2" id="admin-type-toggle">
+          <button type="button" data-type="lawns" class="admin-type-btn px-3 py-2 rounded-lg border-2 text-xs font-semibold transition ${bookingType === 'lawns' ? 'border-maroon bg-maroon text-gold' : 'border-maroon/15 text-maroon hover:border-maroon/40'}">
+            <i class="fas fa-leaf mr-1"></i> Lawns / Hall
+          </button>
+          <button type="button" data-type="guesthouse" class="admin-type-btn px-3 py-2 rounded-lg border-2 text-xs font-semibold transition ${bookingType === 'guesthouse' ? 'border-maroon bg-maroon text-gold' : 'border-maroon/15 text-maroon hover:border-maroon/40'}">
+            <i class="fas fa-bed mr-1"></i> Guest House
+          </button>
+        </div>
       </div>
 
       <div class="space-y-2 mb-5">
@@ -180,21 +212,38 @@
       </div>
     `;
 
+    // Local UI state for the picked type (defaults to current)
+    let pickedType = bookingType;
+    panel.querySelectorAll('.admin-type-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        pickedType = btn.dataset.type;
+        panel.querySelectorAll('.admin-type-btn').forEach((b) => {
+          if (b.dataset.type === pickedType) {
+            b.classList.add('border-maroon', 'bg-maroon', 'text-gold');
+            b.classList.remove('border-maroon/15', 'text-maroon', 'hover:border-maroon/40');
+          } else {
+            b.classList.remove('border-maroon', 'bg-maroon', 'text-gold');
+            b.classList.add('border-maroon/15', 'text-maroon', 'hover:border-maroon/40');
+          }
+        });
+      });
+    });
+
     panel.querySelectorAll('.status-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const newStatus = btn.dataset.status;
         const noteEl = document.getElementById('date-note');
         const noteVal = noteEl ? noteEl.value.trim() : '';
-        await updateDate(state.selected, newStatus, noteVal);
+        await updateDate(state.selected, newStatus, noteVal, pickedType);
       });
     });
   };
 
   /* ---------- Update date ---------- */
-  const updateDate = async (date, status, note) => {
+  const updateDate = async (date, status, note, bookingType) => {
     const json = await api('/api/admin/dates', {
       method: 'POST',
-      body: JSON.stringify({ date, status, note })
+      body: JSON.stringify({ date, status, note, bookingType: bookingType || 'lawns' })
     });
     if (!json) return;
     if (json.ok) {
@@ -220,30 +269,77 @@
     const tbody = document.getElementById('enquiries-tbody');
     if (!tbody) return;
 
-    if (state.enquiries.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="text-center py-12 text-maroon/50"><i class="fas fa-inbox text-3xl mb-3 block"></i>No enquiries yet. They will appear here once visitors submit the form.</td></tr>';
+    // Apply filter
+    const filtered = state.enquiries.filter((e) => {
+      const type = e.bookingType === 'guesthouse' ? 'guesthouse' : 'lawns';
+      if (state.enquiryFilter === 'all') return true;
+      return type === state.enquiryFilter;
+    });
+
+    // Update count badges
+    const counts = { all: state.enquiries.length, lawns: 0, guesthouse: 0 };
+    state.enquiries.forEach((e) => {
+      const t = e.bookingType === 'guesthouse' ? 'guesthouse' : 'lawns';
+      counts[t]++;
+    });
+    const cAll = document.getElementById('enq-count-all');
+    const cLawns = document.getElementById('enq-count-lawns');
+    const cGH = document.getElementById('enq-count-guesthouse');
+    if (cAll) cAll.textContent = counts.all;
+    if (cLawns) cLawns.textContent = counts.lawns;
+    if (cGH) cGH.textContent = counts.guesthouse;
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" class="text-center py-12 text-maroon/50"><i class="fas fa-inbox text-3xl mb-3 block"></i>No enquiries match this filter.</td></tr>';
       return;
     }
 
-    tbody.innerHTML = state.enquiries.map((e) => {
+    tbody.innerHTML = filtered.map((e) => {
       const date = new Date(e.createdAt);
       const pretty = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' });
       const time = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+      const bType = e.bookingType === 'guesthouse' ? 'guesthouse' : 'lawns';
+      const bTypeLabel = bType === 'guesthouse'
+        ? '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gold/15 text-maroon text-xs font-semibold"><i class="fas fa-bed"></i>Guest House</span>'
+        : '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-maroon/10 text-maroon text-xs font-semibold"><i class="fas fa-leaf"></i>Lawns / Hall</span>';
+      const roomTypeCell = bType === 'guesthouse'
+        ? (e.roomType ? escapeHtml(e.roomType) : '<span class="text-maroon/40">—</span>')
+        : '<span class="text-maroon/40">—</span>';
+      const numRoomsCell = bType === 'guesthouse'
+        ? (e.numRooms ? `<span class="font-semibold">${escapeHtml(e.numRooms)}</span>` : '<span class="text-maroon/40">—</span>')
+        : '<span class="text-maroon/40">—</span>';
+      const guestsCell = bType === 'lawns'
+        ? (e.guests ? escapeHtml(e.guests) : '<span class="text-maroon/40">—</span>')
+        : '<span class="text-maroon/40">—</span>';
+
+      // WhatsApp reply link (pre-filled based on booking type)
+      let waMsg = `Hi ${e.name}, thanks for your enquiry with Raj Palace`;
+      if (bType === 'guesthouse') {
+        waMsg += ` Guest House. We have availability for ${e.roomType || 'the rooms'}`;
+        if (e.numRooms) waMsg += ` (${e.numRooms} room${e.numRooms > 1 ? 's' : ''})`;
+        if (e.date) waMsg += ` from ${e.date} (Check-in 10 AM, Check-out next-day 10 AM)`;
+        waMsg += '. Shall we confirm?';
+      } else {
+        waMsg += ` & Lawns${e.date ? ' for ' + e.date : ''}. Would you like to schedule a venue visit?`;
+      }
+
       return `
         <tr class="border-t border-maroon/5 hover:bg-ivory/50 transition">
-          <td class="px-5 py-4 text-sm text-maroon">
+          <td class="px-4 py-4 text-xs text-maroon">
             <div class="font-semibold">${pretty}</div>
-            <div class="text-xs text-maroon/50">${time}</div>
+            <div class="text-[10px] text-maroon/50">${time}</div>
           </td>
-          <td class="px-5 py-4 text-sm text-maroon font-medium">${escapeHtml(e.name)}</td>
-          <td class="px-5 py-4 text-sm">
+          <td class="px-4 py-4 text-sm text-maroon font-medium">${escapeHtml(e.name)}</td>
+          <td class="px-4 py-4 text-sm whitespace-nowrap">
             <a href="tel:${escapeHtml(e.phone)}" class="text-maroon hover:text-gold">${escapeHtml(e.phone)}</a>
-            <a href="https://wa.me/91${e.phone.replace(/\D/g, '')}" target="_blank" class="ml-2 text-green-600 hover:text-green-700"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://wa.me/91${e.phone.replace(/\D/g, '')}?text=${encodeURIComponent(waMsg)}" target="_blank" class="ml-2 text-green-600 hover:text-green-700"><i class="fab fa-whatsapp"></i></a>
           </td>
-          <td class="px-5 py-4 text-sm text-maroon">${escapeHtml(e.date) || '<span class="text-maroon/40">—</span>'}</td>
-          <td class="px-5 py-4 text-sm text-maroon">${escapeHtml(e.guests) || '<span class="text-maroon/40">—</span>'}</td>
-          <td class="px-5 py-4 text-sm text-maroon/80 max-w-xs truncate" title="${escapeHtml(e.message)}">${escapeHtml(e.message) || '<span class="text-maroon/40">—</span>'}</td>
-          <td class="px-5 py-4 text-sm">
+          <td class="px-4 py-4 text-sm">${bTypeLabel}</td>
+          <td class="px-4 py-4 text-sm text-maroon">${escapeHtml(e.date) || '<span class="text-maroon/40">—</span>'}</td>
+          <td class="px-4 py-4 text-sm text-maroon">${roomTypeCell}</td>
+          <td class="px-4 py-4 text-sm text-maroon text-center">${numRoomsCell}</td>
+          <td class="px-4 py-4 text-sm text-maroon">${guestsCell}</td>
+          <td class="px-4 py-4 text-sm">
             <button data-id="${e.id}" class="del-enquiry w-8 h-8 rounded-full bg-red-50 hover:bg-red-500 hover:text-white text-red-600 transition" title="Delete">
               <i class="fas fa-trash text-xs"></i>
             </button>
@@ -261,6 +357,18 @@
           showToast('Enquiry deleted', 'success');
           await loadEnquiries();
         }
+      });
+    });
+  };
+
+  /* ---------- Enquiry filter buttons ---------- */
+  const bindEnquiryFilters = () => {
+    document.querySelectorAll('.enq-filter-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.enquiryFilter = btn.dataset.enqFilter;
+        document.querySelectorAll('.enq-filter-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderEnquiries();
       });
     });
   };
@@ -299,6 +407,7 @@
   });
 
   document.getElementById('refresh-enquiries')?.addEventListener('click', loadEnquiries);
+  bindEnquiryFilters();
 
   document.getElementById('bulk-refresh')?.addEventListener('click', async () => {
     await loadAllDates();

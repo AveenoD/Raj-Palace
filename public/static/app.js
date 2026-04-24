@@ -5,6 +5,27 @@
 (function () {
   'use strict';
 
+  /* ---------- Booking type state (NEW) ---------- */
+  // UI-only state for the availability toggle.
+  // Does not affect calendar logic.
+  let bookingType = 'guesthouse'; // 'guesthouse' | 'lawns'
+
+  const availabilityTypeBtns = document.querySelectorAll('.availability-booking-toggle-btn');
+  const setAvailabilityBookingType = (type) => {
+    bookingType = type === 'lawns' ? 'lawns' : 'guesthouse';
+    availabilityTypeBtns.forEach((b) => {
+      if (b.dataset.bookingType === bookingType) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+  };
+
+  availabilityTypeBtns.forEach((b) => {
+    b.addEventListener('click', () => setAvailabilityBookingType(b.dataset.bookingType));
+  });
+
+  // Ensure default state is "Guest House" active.
+  setAvailabilityBookingType('guesthouse');
+
   /* ---------- 1. Sticky Nav ---------- */
   const nav = document.getElementById('main-nav');
   const onScroll = () => {
@@ -268,12 +289,60 @@
     }
   };
 
+  /* ---------- Booking type toggle (NEW) ---------- */
+  const bookingTypeInput = document.getElementById('enquiry-booking-type');
+  const bookingTypeBtns = document.querySelectorAll('.booking-type-btn');
+  const lawnFields = document.querySelector('.booking-fields-lawns');
+  const ghFields = document.querySelector('.booking-fields-guesthouse');
+  const dateLabel = document.getElementById('enquiry-date-label');
+
+  const setBookingType = (type) => {
+    if (bookingTypeInput) bookingTypeInput.value = type;
+    bookingTypeBtns.forEach((b) => {
+      if (b.dataset.bookingType === type) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+    if (type === 'guesthouse') {
+      if (lawnFields) lawnFields.classList.add('hidden');
+      if (ghFields) ghFields.classList.remove('hidden');
+      if (dateLabel) dateLabel.textContent = 'Check-in Date';
+    } else {
+      if (lawnFields) lawnFields.classList.remove('hidden');
+      if (ghFields) ghFields.classList.add('hidden');
+      if (dateLabel) dateLabel.textContent = 'Wedding Date';
+    }
+    updateEnquiryWhatsapp();
+  };
+
+  bookingTypeBtns.forEach((b) => {
+    b.addEventListener('click', () => setBookingType(b.dataset.bookingType));
+  });
+
   const updateEnquiryWhatsapp = () => {
     if (!enquiryWhatsapp) return;
     const date = enquiryDateInput?.value || '';
-    const msg = `Hi! I'm interested in booking Raj Palace & Lawns${date ? ' for ' + date : ''}. Please share details.`;
+    const type = bookingTypeInput?.value || 'lawns';
+    let msg;
+    if (type === 'guesthouse') {
+      const roomType = enquiryForm?.querySelector('[name="roomType"]')?.value || '';
+      const numRooms = enquiryForm?.querySelector('[name="numRooms"]')?.value || '';
+      msg = `Hi! I'm interested in booking Raj Palace Guest House.\n`;
+      msg += `• Booking Type: Guest House\n`;
+      if (roomType) msg += `• Room Type: ${roomType}\n`;
+      if (numRooms) msg += `• Number of Rooms: ${numRooms}\n`;
+      if (date) msg += `• Check-in Date: ${date} (10 AM, 24-hour stay)\n`;
+      msg += `Please share availability & details.`;
+    } else {
+      msg = `Hi! I'm interested in booking Raj Palace & Lawns${date ? ' for ' + date : ''}.\n`;
+      msg += `• Booking Type: Lawns / Hall\n`;
+      msg += `Please share availability & details.`;
+    }
     enquiryWhatsapp.href = `https://wa.me/919764490162?text=${encodeURIComponent(msg)}`;
   };
+
+  // Refresh WhatsApp link live as user types in guest house fields
+  enquiryForm?.addEventListener('input', updateEnquiryWhatsapp);
+  enquiryForm?.addEventListener('change', updateEnquiryWhatsapp);
 
   if (enquireBtn) {
     enquireBtn.addEventListener('click', () => {
@@ -281,9 +350,20 @@
         showToast('Please select a date first', 'warn');
         return;
       }
+      setBookingType('lawns');
       openEnquiryModal(calState.selected);
     });
   }
+
+  // Guest House quick book button
+  const ghBookBtn = document.getElementById('gh-book-btn');
+  if (ghBookBtn) {
+    ghBookBtn.addEventListener('click', () => {
+      setBookingType('guesthouse');
+      openEnquiryModal(calState.selected || '');
+    });
+  }
+
   if (modalClose) modalClose.addEventListener('click', closeEnquiryModal);
   if (modal) {
     modal.querySelector('.modal-backdrop')?.addEventListener('click', closeEnquiryModal);
@@ -293,13 +373,23 @@
     enquiryForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const fd = new FormData(enquiryForm);
+      const bookingType = fd.get('bookingType') || 'lawns';
       const payload = {
         name: fd.get('name'),
         phone: fd.get('phone'),
         date: fd.get('date'),
-        guests: fd.get('guests'),
+        bookingType,
+        guests: bookingType === 'lawns' ? fd.get('guests') : '',
+        roomType: bookingType === 'guesthouse' ? fd.get('roomType') : '',
+        numRooms: bookingType === 'guesthouse' ? fd.get('numRooms') : '',
         message: fd.get('message')
       };
+
+      // Validate guest house fields
+      if (bookingType === 'guesthouse' && !payload.roomType) {
+        showToast('Please select a room type', 'warn');
+        return;
+      }
 
       const submitBtn = enquiryForm.querySelector('button[type="submit"]');
       const origHtml = submitBtn.innerHTML;
@@ -316,6 +406,7 @@
         if (json.ok) {
           showToast('Enquiry sent! We will call you shortly.', 'success');
           enquiryForm.reset();
+          setBookingType('lawns');
           closeEnquiryModal();
         } else {
           showToast(json.error || 'Something went wrong. Try WhatsApp.', 'warn');
@@ -328,6 +419,36 @@
       }
     });
   }
+
+  /* ---------- Gallery venue switch (NEW) ---------- */
+  const galleryVenueBtns = document.querySelectorAll('.gallery-venue-btn');
+  const galleryGridLawns = document.getElementById('gallery-grid');
+  const galleryGridGH = document.getElementById('gallery-grid-guesthouse');
+  const galleryCatTabs = document.getElementById('gallery-category-tabs');
+
+  galleryVenueBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const venue = btn.dataset.galleryVenue;
+      galleryVenueBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (venue === 'guesthouse') {
+        if (galleryGridLawns) galleryGridLawns.classList.add('hidden');
+        if (galleryGridGH) {
+          galleryGridGH.classList.remove('hidden');
+          galleryGridGH.classList.add('grid');
+        }
+        if (galleryCatTabs) galleryCatTabs.classList.add('hidden');
+      } else {
+        if (galleryGridLawns) galleryGridLawns.classList.remove('hidden');
+        if (galleryGridGH) {
+          galleryGridGH.classList.add('hidden');
+          galleryGridGH.classList.remove('grid');
+        }
+        if (galleryCatTabs) galleryCatTabs.classList.remove('hidden');
+      }
+    });
+  });
 
   /* ---------- 9. Toast ---------- */
   const toast = document.getElementById('toast');
