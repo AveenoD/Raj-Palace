@@ -1,1 +1,389 @@
-h1 { font-family: Arial, Helvetica, sans-serif; }
+/* =====================================================
+   Raj Palace & Lawns — Luxury Theme
+   ===================================================== */
+
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; }
+
+/* ----- Custom Scrollbar ----- */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #F8F5F0; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #D4AF37, #A8841F);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+
+/* ----- Selection ----- */
+::selection { background: #D4AF37; color: #4A0E0E; }
+
+/* =====================================================
+   Glassmorphism
+   ===================================================== */
+.glass-dark {
+  background: rgba(74, 14, 14, 0.35);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+}
+.glass-gold {
+  background: rgba(212, 175, 55, 0.15);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+/* =====================================================
+   Navigation
+   ===================================================== */
+#main-nav {
+  background: transparent;
+}
+#main-nav.scrolled {
+  background: rgba(46, 6, 6, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+.nav-brand { color: #ffffff; }
+.nav-subbrand { color: #D4AF37; }
+.nav-link {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  font-size: 0.9rem;
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.3s;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background: #D4AF37;
+  transition: all 0.3s;
+  transform: translateX(-50%);
+}
+.nav-link:hover { color: #D4AF37; }
+.nav-link:hover::after { width: 100%; }
+.mobile-link { transition: all 0.2s; }
+
+/* =====================================================
+   Hero Slideshow
+   ===================================================== */
+.hero-slideshow { position: absolute; inset: 0; }
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+  transform: scale(1.05);
+  animation: kenburns 25s ease-in-out infinite alternate;
+}
+.hero-slide.active { opacity: 1; }
+@keyframes kenburns {
+  from { transform: scale(1.05); }
+  to { transform: scale(1.15); }
+}
+.hero-vignette {
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+/* =====================================================
+   Reveal-up animation
+   ===================================================== */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(.16, 1, .3, 1), transform 0.8s cubic-bezier(.16, 1, .3, 1);
+}
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-up:nth-child(2) { transition-delay: 0.1s; }
+.reveal-up:nth-child(3) { transition-delay: 0.2s; }
+.reveal-up:nth-child(4) { transition-delay: 0.3s; }
+.reveal-up:nth-child(5) { transition-delay: 0.4s; }
+.reveal-up:nth-child(6) { transition-delay: 0.5s; }
+
+/* Hero reveal - immediate with stagger */
+#hero .reveal-up { animation: heroFadeUp 1s cubic-bezier(.16, 1, .3, 1) forwards; opacity: 0; }
+#hero .reveal-up:nth-child(1) { animation-delay: 0.2s; }
+#hero .reveal-up:nth-child(2) { animation-delay: 0.4s; }
+#hero .reveal-up:nth-child(3) { animation-delay: 0.6s; }
+#hero .reveal-up:nth-child(4) { animation-delay: 0.8s; }
+#hero .reveal-up:nth-child(5) { animation-delay: 1s; }
+#hero .reveal-up:nth-child(6) { animation-delay: 1.2s; }
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================
+   Highlight Cards
+   ===================================================== */
+.highlight-card .fa-heart,
+.highlight-card .fa-moon { color: #4A0E0E; }
+
+/* =====================================================
+   Feature Cards — accent line
+   ===================================================== */
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 2rem;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #D4AF37, #E8C96A);
+  border-radius: 0 0 3px 3px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s;
+}
+.feature-card:hover::before { transform: scaleX(1); }
+
+/* =====================================================
+   Calendar
+   ===================================================== */
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  user-select: none;
+}
+.cal-day.empty { cursor: default; background: transparent; }
+.cal-day.past {
+  color: rgba(255, 255, 255, 0.25);
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.02);
+}
+.cal-day.available {
+  background: rgba(34, 197, 94, 0.2);
+  color: #d1fae5;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+.cal-day.available:hover {
+  background: rgba(34, 197, 94, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25);
+}
+.cal-day.booked {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  cursor: not-allowed;
+}
+.cal-day.blocked {
+  background: rgba(107, 114, 128, 0.3);
+  color: #e5e7eb;
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  cursor: not-allowed;
+}
+.cal-day.selected {
+  background: linear-gradient(135deg, #D4AF37, #E8C96A) !important;
+  color: #4A0E0E !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.4), 0 8px 24px rgba(212, 175, 55, 0.4) !important;
+  transform: scale(1.08) !important;
+  z-index: 2;
+}
+.cal-day.today::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Admin calendar (light theme) */
+.admin-cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  user-select: none;
+  background: #F8F5F0;
+  color: #4A0E0E;
+}
+.admin-cal-day.empty { cursor: default; background: transparent; }
+.admin-cal-day:hover:not(.empty):not(.past) {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(74, 14, 14, 0.15);
+}
+.admin-cal-day.past { color: rgba(74, 14, 14, 0.25); background: #F8F5F0; }
+.admin-cal-day.available { background: #dcfce7; color: #14532d; border: 1px solid #86efac; }
+.admin-cal-day.booked { background: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
+.admin-cal-day.blocked { background: #e5e7eb; color: #374151; border: 1px solid #9ca3af; }
+.admin-cal-day.selected {
+  background: linear-gradient(135deg, #4A0E0E, #6B1919) !important;
+  color: #D4AF37 !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.4) !important;
+  transform: scale(1.05) !important;
+}
+.admin-cal-day.today::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #D4AF37;
+}
+
+/* =====================================================
+   Modal
+   ===================================================== */
+#enquiry-modal.active,
+#lightbox.active {
+  display: flex !important;
+}
+#enquiry-modal .modal-content {
+  animation: modalIn 0.4s cubic-bezier(.16, 1, .3, 1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* =====================================================
+   Sticky WhatsApp pulse
+   ===================================================== */
+.whatsapp-pulse {
+  animation: whatsappPulse 2s infinite;
+}
+@keyframes whatsappPulse {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7), 0 10px 30px rgba(0, 0, 0, 0.25); }
+  70% { box-shadow: 0 0 0 14px rgba(34, 197, 94, 0), 0 10px 30px rgba(0, 0, 0, 0.25); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0), 0 10px 30px rgba(0, 0, 0, 0.25); }
+}
+
+/* =====================================================
+   Footer links
+   ===================================================== */
+.footer-link {
+  color: rgba(248, 245, 240, 0.8);
+  transition: all 0.2s;
+  display: inline-block;
+}
+.footer-link:hover {
+  color: #D4AF37;
+  transform: translateX(3px);
+}
+
+/* =====================================================
+   Gallery tabs
+   ===================================================== */
+.gallery-tab.active {
+  background: #4A0E0E !important;
+  color: #D4AF37 !important;
+}
+.gallery-item {
+  transition: opacity 0.4s, transform 0.4s;
+}
+.gallery-item.hidden {
+  display: none;
+}
+
+/* =====================================================
+   FAQ
+   ===================================================== */
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item[open] {
+  border-color: rgba(212, 175, 55, 0.5) !important;
+  box-shadow: 0 10px 30px rgba(74, 14, 14, 0.08);
+}
+
+/* =====================================================
+   Decorative ornamentation
+   ===================================================== */
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #D4AF37;
+}
+.ornament-divider::before,
+.ornament-divider::after {
+  content: '';
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+}
+
+/* =====================================================
+   Toast
+   ===================================================== */
+#toast.active {
+  display: block !important;
+  animation: toastIn 0.4s ease-out;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* =====================================================
+   Utility text gradients
+   ===================================================== */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #E8C96A, #D4AF37, #A8841F);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* =====================================================
+   Print
+   ===================================================== */
+@media print {
+  #sticky-whatsapp, #main-nav, #enquiry-modal { display: none !important; }
+}
+
+/* =====================================================
+   Mobile tweaks
+   ===================================================== */
+@media (max-width: 640px) {
+  .cal-day { font-size: 0.75rem; border-radius: 8px; }
+  .hero-slide { background-position: center center; }
+}
+
+/* =====================================================
+   Loading skeleton
+   ===================================================== */
+.skeleton {
+  background: linear-gradient(90deg, #efe9de 25%, #f8f5f0 50%, #efe9de 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
