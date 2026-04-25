@@ -91,6 +91,7 @@
   /* ---------- 6. Gallery Filter + Lightbox ---------- */
   const galleryTabs = document.querySelectorAll('.gallery-tab');
   const galleryItems = document.querySelectorAll('.gallery-item');
+  let currentLawnsFilter = 'all';
   galleryTabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       galleryTabs.forEach((t) => {
@@ -101,11 +102,51 @@
       tab.classList.remove('bg-white', 'text-maroon', 'border', 'border-maroon/20');
 
       const filter = tab.dataset.galleryFilter;
+      currentLawnsFilter = filter || 'all';
       galleryItems.forEach((item) => {
         const cat = item.dataset.category;
         if (filter === 'all' || cat === filter) item.classList.remove('hidden');
         else item.classList.add('hidden');
       });
+
+      updateGalleryLoadMoreVisibility();
+    });
+  });
+
+  // Guest House gallery filter
+  const galleryTabsGH = document.querySelectorAll('.gallery-tab-gh');
+  const galleryItemsGH = document.querySelectorAll('.gallery-item-gh');
+  const ghFeatured = document.getElementById('gallery-grid-guesthouse-featured');
+  const ghMore = document.getElementById('gallery-grid-guesthouse-more');
+  let currentGuesthouseFilter = 'all';
+  galleryTabsGH.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      galleryTabsGH.forEach((t) => {
+        t.classList.remove('active', 'bg-maroon', 'text-gold');
+        t.classList.add('bg-white', 'text-maroon', 'border', 'border-maroon/20');
+      });
+      tab.classList.add('active', 'bg-maroon', 'text-gold');
+      tab.classList.remove('bg-white', 'text-maroon', 'border', 'border-maroon/20');
+
+      const filter = tab.dataset.galleryFilterGh;
+      currentGuesthouseFilter = filter || 'all';
+      // Avoid huge gaps: for Guest House, when a specific category is selected,
+      // hide the fixed featured grid and show the normal grid.
+      if (filter && filter !== 'all') {
+        if (ghFeatured) ghFeatured.classList.add('hidden');
+        if (ghMore) ghMore.classList.remove('hidden');
+      } else {
+        if (ghFeatured) ghFeatured.classList.remove('hidden');
+        // keep "more" collapsed until user explicitly expands
+      }
+
+      galleryItemsGH.forEach((item) => {
+        const cat = item.dataset.category;
+        if (filter === 'all' || cat === filter) item.classList.remove('hidden');
+        else item.classList.add('hidden');
+      });
+
+      updateGalleryLoadMoreVisibility();
     });
   });
 
@@ -262,7 +303,49 @@
   const enquiryForm = document.getElementById('enquiry-form');
   const enquiryDateInput = document.getElementById('enquiry-date');
   const enquiryDateDisplay = document.getElementById('enquiry-date-display');
+  const enquiryCheckoutDate = document.getElementById('enquiry-checkout-date');
   const enquiryWhatsapp = document.getElementById('enquiry-whatsapp');
+  const grid = document.getElementById('cal-grid');
+
+  const addDays = (dateStr, days) => {
+    if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return '';
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    dt.setDate(dt.getDate() + days);
+    return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+  };
+
+  const applyGuesthouseHoldRange = () => {
+    if (!grid) return;
+    // Clear previous holds
+    grid.querySelectorAll('.cal-day.gh-hold').forEach((c) => {
+      c.classList.remove('gh-hold');
+      if (c.dataset.ghHoldPrevDisabled === 'true') c.disabled = true;
+      else if (c.dataset.ghHoldPrevDisabled === 'false') c.disabled = false;
+      delete c.dataset.ghHoldPrevDisabled;
+    });
+
+    const type = bookingTypeInput?.value || 'lawns';
+    const checkIn = enquiryDateInput?.value || '';
+    const checkOut = enquiryCheckoutDate?.value || '';
+    if (type !== 'guesthouse' || !checkIn || !checkOut) return;
+    if (checkOut <= checkIn) return;
+
+    // Mark in-between nights as temporarily not available (UI only)
+    let cur = addDays(checkIn, 1);
+    while (cur && cur <= checkOut) {
+      const cell = grid.querySelector(`.cal-day[data-date="${cur}"]`);
+      if (cell && !cell.classList.contains('empty') && !cell.classList.contains('past')) {
+        // Don't override true booked/blocked from backend
+        if (!cell.classList.contains('booked') && !cell.classList.contains('blocked')) {
+          cell.dataset.ghHoldPrevDisabled = String(cell.disabled);
+          cell.classList.add('gh-hold');
+          cell.disabled = true;
+        }
+      }
+      cur = addDays(cur, 1);
+    }
+  };
 
   const openEnquiryModal = (date) => {
     if (!modal) return;
@@ -277,7 +360,13 @@
       enquiryDateInput.value = '';
       enquiryDateDisplay.value = 'Flexible / To be discussed';
     }
+    if (enquiryCheckoutDate) {
+      // Default: next day (guest house UX). Visible only in guesthouse mode.
+      enquiryCheckoutDate.min = enquiryDateInput?.value ? addDays(enquiryDateInput.value, 1) : '';
+      enquiryCheckoutDate.value = enquiryDateInput?.value ? addDays(enquiryDateInput.value, 1) : '';
+    }
     updateEnquiryWhatsapp();
+    applyGuesthouseHoldRange();
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
   };
@@ -306,12 +395,20 @@
       if (lawnFields) lawnFields.classList.add('hidden');
       if (ghFields) ghFields.classList.remove('hidden');
       if (dateLabel) dateLabel.textContent = 'Check-in Date';
+      if (enquiryCheckoutDate && enquiryDateInput?.value) {
+        enquiryCheckoutDate.min = addDays(enquiryDateInput.value, 1);
+        if (!enquiryCheckoutDate.value || enquiryCheckoutDate.value <= enquiryDateInput.value) {
+          enquiryCheckoutDate.value = addDays(enquiryDateInput.value, 1);
+        }
+      }
     } else {
       if (lawnFields) lawnFields.classList.remove('hidden');
       if (ghFields) ghFields.classList.add('hidden');
       if (dateLabel) dateLabel.textContent = 'Wedding Date';
+      if (enquiryCheckoutDate) enquiryCheckoutDate.value = '';
     }
     updateEnquiryWhatsapp();
+    applyGuesthouseHoldRange();
   };
 
   bookingTypeBtns.forEach((b) => {
@@ -322,19 +419,24 @@
     if (!enquiryWhatsapp) return;
     const date = enquiryDateInput?.value || '';
     const type = bookingTypeInput?.value || 'lawns';
+    const guests = enquiryForm?.querySelector('[name="guests"]')?.value || '';
     let msg;
     if (type === 'guesthouse') {
       const roomType = enquiryForm?.querySelector('[name="roomType"]')?.value || '';
       const numRooms = enquiryForm?.querySelector('[name="numRooms"]')?.value || '';
+      const checkOut = enquiryCheckoutDate?.value || '';
       msg = `Hi! I'm interested in booking Raj Palace Guest House.\n`;
       msg += `• Booking Type: Guest House\n`;
+      if (guests) msg += `• Guests: ${guests}\n`;
       if (roomType) msg += `• Room Type: ${roomType}\n`;
       if (numRooms) msg += `• Number of Rooms: ${numRooms}\n`;
       if (date) msg += `• Check-in Date: ${date} (10 AM, 24-hour stay)\n`;
+      if (checkOut) msg += `• Check-out Date: ${checkOut} (10 AM)\n`;
       msg += `Please share availability & details.`;
     } else {
       msg = `Hi! I'm interested in booking Raj Palace & Lawns${date ? ' for ' + date : ''}.\n`;
       msg += `• Booking Type: Lawns / Hall\n`;
+      if (guests) msg += `• Guests: ${guests}\n`;
       msg += `Please share availability & details.`;
     }
     enquiryWhatsapp.href = `https://wa.me/919764490162?text=${encodeURIComponent(msg)}`;
@@ -343,6 +445,10 @@
   // Refresh WhatsApp link live as user types in guest house fields
   enquiryForm?.addEventListener('input', updateEnquiryWhatsapp);
   enquiryForm?.addEventListener('change', updateEnquiryWhatsapp);
+  enquiryCheckoutDate?.addEventListener('change', () => {
+    updateEnquiryWhatsapp();
+    applyGuesthouseHoldRange();
+  });
 
   if (enquireBtn) {
     enquireBtn.addEventListener('click', () => {
@@ -350,7 +456,8 @@
         showToast('Please select a date first', 'warn');
         return;
       }
-      setBookingType('lawns');
+      // Open modal in the currently selected booking type (top toggle).
+      setBookingType(bookingType);
       openEnquiryModal(calState.selected);
     });
   }
@@ -379,15 +486,20 @@
         phone: fd.get('phone'),
         date: fd.get('date'),
         bookingType,
-        guests: bookingType === 'lawns' ? fd.get('guests') : '',
+        guests: fd.get('guests') || '',
         roomType: bookingType === 'guesthouse' ? fd.get('roomType') : '',
         numRooms: bookingType === 'guesthouse' ? fd.get('numRooms') : '',
+        checkoutDate: bookingType === 'guesthouse' ? fd.get('checkoutDate') : '',
         message: fd.get('message')
       };
 
       // Validate guest house fields
       if (bookingType === 'guesthouse' && !payload.roomType) {
         showToast('Please select a room type', 'warn');
+        return;
+      }
+      if (bookingType === 'guesthouse' && (!payload.checkoutDate || payload.checkoutDate <= payload.date)) {
+        showToast('Please select a valid check-out date', 'warn');
         return;
       }
 
@@ -423,14 +535,72 @@
   /* ---------- Gallery venue switch (NEW) ---------- */
   const galleryVenueBtns = document.querySelectorAll('.gallery-venue-btn');
   const galleryGridLawns = document.getElementById('gallery-grid');
+  const galleryGridLawnsMore = document.getElementById('gallery-grid-more');
   const galleryGridGH = document.getElementById('gallery-grid-guesthouse');
+  const galleryGridGHMore = document.getElementById('gallery-grid-guesthouse-more');
   const galleryCatTabs = document.getElementById('gallery-category-tabs');
+  const galleryCatTabsGH = document.getElementById('gallery-category-tabs-guesthouse');
+  const galleryLoadMoreBtn = document.getElementById('gallery-load-more');
+  let galleryExpanded = false;
+
+  const getActiveVenue = () => {
+    const activeVenueBtn = document.querySelector('.gallery-venue-btn.active');
+    return activeVenueBtn?.dataset?.galleryVenue || 'lawns';
+  };
+
+  const updateGalleryLoadMoreVisibility = () => {
+    if (!galleryLoadMoreBtn) return;
+    const venue = getActiveVenue();
+    const hasMore =
+      venue === 'lawns'
+        ? (galleryGridLawnsMore?.querySelectorAll('.gallery-item')?.length || 0) > 0
+        : (galleryGridGHMore?.querySelectorAll('.gallery-item-gh')?.length || 0) > 0;
+
+    const filterOk =
+      venue === 'lawns' ? currentLawnsFilter === 'all' : currentGuesthouseFilter === 'all';
+
+    // If only one row (no "more" content) OR filter isn't "all", hide the button.
+    const shouldShow = hasMore && filterOk;
+    galleryLoadMoreBtn.classList.toggle('hidden', !shouldShow);
+
+    // If hidden, also collapse extra grid just in case
+    if (!shouldShow) {
+      galleryExpanded = false;
+      if (galleryGridLawnsMore) galleryGridLawnsMore.classList.add('hidden');
+      if (galleryGridGHMore) galleryGridGHMore.classList.add('hidden');
+    }
+  };
+
+  const setGalleryExpanded = (expanded) => {
+    galleryExpanded = !!expanded;
+    const venue = getActiveVenue();
+
+    if (galleryGridLawnsMore) galleryGridLawnsMore.classList.toggle('hidden', !(venue === 'lawns' && galleryExpanded));
+    if (galleryGridGHMore) galleryGridGHMore.classList.toggle('hidden', !(venue === 'guesthouse' && galleryExpanded));
+    if (galleryLoadMoreBtn) {
+      // Toggle button label (Load More <-> Show Less)
+      galleryLoadMoreBtn.innerHTML = galleryExpanded
+        ? '<i class="fas fa-chevron-up mr-2"></i>Show Less'
+        : '<i class="fas fa-plus mr-2"></i>Load More Photos';
+    }
+  };
+
+  if (galleryLoadMoreBtn) {
+    galleryLoadMoreBtn.addEventListener('click', () => setGalleryExpanded(!galleryExpanded));
+  }
 
   galleryVenueBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const venue = btn.dataset.galleryVenue;
       galleryVenueBtns.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
+
+      // Reset expanded state when switching venue
+      setGalleryExpanded(false);
+      // Reset filters to "all" and update button visibility
+      if (venue === 'guesthouse') currentGuesthouseFilter = 'all';
+      else currentLawnsFilter = 'all';
+      updateGalleryLoadMoreVisibility();
 
       if (venue === 'guesthouse') {
         if (galleryGridLawns) galleryGridLawns.classList.add('hidden');
@@ -439,6 +609,7 @@
           galleryGridGH.classList.add('grid');
         }
         if (galleryCatTabs) galleryCatTabs.classList.add('hidden');
+        if (galleryCatTabsGH) galleryCatTabsGH.classList.remove('hidden');
       } else {
         if (galleryGridLawns) galleryGridLawns.classList.remove('hidden');
         if (galleryGridGH) {
@@ -446,9 +617,13 @@
           galleryGridGH.classList.remove('grid');
         }
         if (galleryCatTabs) galleryCatTabs.classList.remove('hidden');
+        if (galleryCatTabsGH) galleryCatTabsGH.classList.add('hidden');
       }
     });
   });
+
+  // Initial load-more visibility
+  updateGalleryLoadMoreVisibility();
 
   /* ---------- 9. Toast ---------- */
   const toast = document.getElementById('toast');

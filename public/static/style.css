@@ -193,6 +193,13 @@ body { overflow-x: hidden; }
   border: 1px solid rgba(107, 114, 128, 0.5);
   cursor: not-allowed;
 }
+.cal-day.gh-hold {
+  background: rgba(107, 114, 128, 0.3);
+  color: #e5e7eb;
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  cursor: not-allowed;
+  opacity: 0.85;
+}
 .cal-day.selected {
   background: linear-gradient(135deg, #D4AF37, #E8C96A) !important;
   color: #4A0E0E !important;
@@ -296,8 +303,20 @@ body { overflow-x: hidden; }
 #lightbox.active {
   display: flex !important;
 }
+#enquiry-modal {
+  align-items: center;
+  justify-content: center;
+}
 #enquiry-modal .modal-content {
   animation: modalIn 0.4s cubic-bezier(.16, 1, .3, 1);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  width: min(92vw, 560px);
+}
+#enquiry-modal #enquiry-form {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 @keyframes modalIn {
   from { opacity: 0; transform: translateY(30px) scale(0.96); }
@@ -343,6 +362,89 @@ body { overflow-x: hidden; }
   display: none;
 }
 
+/* =====================================================
+   Gallery Featured Grid (FINAL STABLE VERSION)
+   ===================================================== */
+
+   .gallery-featured-grid {
+    display: grid;
+    gap: 14px;
+    width: 100%;
+  }
+  
+  /* Mobile */
+  .gallery-stack {
+    display: grid;
+    gap: 14px;
+  }
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    .gallery-featured-grid {
+      --gap: 14px;
+  
+      /* CONTROL SIZE (important) */
+      --small: clamp(140px, 12vw, 180px);
+      --big: calc(var(--small) * 2 + var(--gap));
+  
+      display: grid;
+      gap: var(--gap);
+  
+      /* EXACT STRUCTURE */
+      grid-template-columns: 
+        var(--small) 
+        var(--big) 
+        var(--big) 
+        var(--small);
+  
+      grid-template-rows: var(--small) var(--small);
+  
+      /* KEY FIX (alignment + no collapse) */
+      margin: 0 auto;
+    }
+  
+    /* stacks */
+    .gallery-stack {
+      display: grid;
+      grid-template-rows: var(--small) var(--small);
+      gap: var(--gap);
+    }
+  
+    /* big tiles */
+    .gallery-featured-big {
+      grid-row: span 2;
+    }
+  }
+  
+  /* =====================================================
+     Tiles
+     ===================================================== */
+  
+  .gallery-featured-tile {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #eee;
+  }
+  
+  /* CRITICAL: prevents collapse */
+  .gallery-featured-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  /* Force proper fill */
+  .gallery-stack > * {
+    height: 100%;
+  }
+  
+  .gallery-featured-big > * {
+    height: 100%;
+  }
+ 
 /* =====================================================
    FAQ
    ===================================================== */

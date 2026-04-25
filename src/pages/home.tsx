@@ -9,11 +9,15 @@ export const HomePage = () => {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex items-center justify-between h-16 md:h-20">
             <a href="#hero" class="flex items-center gap-3 group">
-              <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-gold to-golddark flex items-center justify-center shadow-lg ring-2 ring-gold/30">
-                <i class="fas fa-crown text-white text-lg md:text-xl"></i>
+              <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center shadow-lg ring-2 ring-gold/30 overflow-hidden">
+                <img
+                  src={encodeURI('/static/images/logo raj palace.jpg.jpeg')}
+                  alt="Raj Palace Logo"
+                  class="w-full h-full object-cover"
+                />
               </div>
               <div class="flex flex-col leading-tight">
-                <span class="font-display text-lg md:text-xl font-bold nav-brand">
+                <span class="font-display text-lg md:text-xl font-bold nav-brand ml-9">
                   Raj Palace
                 </span>
                 <span class="text-[10px] md:text-xs tracking-[0.2em] uppercase nav-subbrand">
@@ -191,7 +195,7 @@ export const HomePage = () => {
                 <i class="fas fa-star text-gold"></i>
               </p>
               <h3 class="font-display text-white text-xl md:text-2xl font-semibold">
-                Trusted Wedding Venue in Nashik District
+                Trusted Wedding Venue & Guest House in Nashik District
               </h3>
             </div>
             <div class="grid grid-cols-3 gap-4 md:gap-10">
@@ -653,14 +657,27 @@ export const HomePage = () => {
                 placeholder="10-digit mobile"
               />
             </div>
-            <div>
-              <label id="enquiry-date-label" class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Wedding Date</label>
-              <input
-                id="enquiry-date-display"
-                type="text"
-                readonly
-                class="w-full px-4 py-3 rounded-xl border border-maroon/20 bg-ivory font-semibold text-maroon"
-              />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label id="enquiry-date-label" class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Wedding Date</label>
+                <input
+                  id="enquiry-date-display"
+                  type="text"
+                  readonly
+                  class="w-full px-4 py-3 rounded-xl border border-maroon/20 bg-ivory font-semibold text-maroon"
+                />
+              </div>
+
+              {/* Check-out date (Guest House only) */}
+              <div class="booking-fields booking-fields-guesthouse hidden">
+                <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Check-out Date</label>
+                <input
+                  id="enquiry-checkout-date"
+                  type="date"
+                  name="checkoutDate"
+                  class="w-full px-4 py-3 rounded-xl border border-maroon/20 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition bg-white font-semibold text-maroon"
+                />
+              </div>
             </div>
 
             {/* Lawns-only fields */}
@@ -681,6 +698,20 @@ export const HomePage = () => {
 
             {/* Guest House fields (NEW) */}
             <div class="booking-fields booking-fields-guesthouse hidden space-y-4">
+              <div>
+                <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Expected Guests</label>
+                <select
+                  name="guests"
+                  class="w-full px-4 py-3 rounded-xl border border-maroon/20 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition bg-white"
+                >
+                  <option value="">Select guest count</option>
+                  <option>Less than 500</option>
+                  <option>500 – 1000</option>
+                  <option>1000 – 2500</option>
+                  <option>2500 – 5000</option>
+                  <option>More than 5000</option>
+                </select>
+              </div>
               <div>
                 <label class="block text-maroon text-xs tracking-wider uppercase font-semibold mb-2">Room Type</label>
                 <select
@@ -857,28 +888,135 @@ export const HomePage = () => {
             ))}
           </div>
 
-          {/* Masonry Grid — Lawns */}
-          <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+          {/* Category Tabs (Guest House only) */}
+          <div id="gallery-category-tabs-guesthouse" class="hidden flex flex-wrap justify-center gap-2 mb-10 reveal-up">
             {[
-              { img: 'hall-interior-red-chairs.jpg', cat: 'hall', span: 'row-span-2' },
-              { img: 'facade-night.jpg', cat: 'night' },
-              { img: 'saptapadi-mandap.jpg', cat: 'wedding', span: 'row-span-2' },
-              { img: 'lawn-aerial.jpg', cat: 'lawn' },
-              { img: 'hall-wedding-setup.jpg', cat: 'wedding' },
-              { img: 'entrance-lit.jpg', cat: 'night' },
-              { img: 'welcome-gate.jpg', cat: 'night' },
-              { img: 'haldi-decor.jpg', cat: 'wedding' },
-              { img: 'facade-day.jpg', cat: 'lawn' },
-              { img: 'hall-mixed-seating.jpg', cat: 'hall', span: 'row-span-2' },
+              { key: 'all', label: 'All' },
+              { key: 'facade', label: 'Facade' },
+              { key: 'rooms', label: 'Rooms' },
+              { key: 'interior', label: 'Interior' }
+            ].map((t, i) => (
+              <button
+                data-gallery-filter-gh={t.key}
+                class={`gallery-tab-gh px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                  i === 0
+                    ? 'bg-maroon text-gold'
+                    : 'bg-white text-maroon hover:bg-maroon hover:text-gold border border-maroon/20'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Featured grid — Lawns (stack + big + big + stack) */}
+          <div id="gallery-grid" class="gallery-featured-grid">
+            {/* Left stack (2) */}
+            <div class="gallery-stack" data-gallery-stack="left">
+              {[
+                { img: 'haldi-decor.jpg', cat: 'wedding' },
+                { img: 'welcome-gate.jpg', cat: 'night' }
+              ].map((g) => (
+                <div class="gallery-item" data-category={g.cat}>
+                  <div class="group gallery-featured-tile gallery-featured-tile--small relative rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-shadow">
+                    <img
+                      loading="lazy"
+                      src={`/static/images/${g.img}`}
+                      alt="Raj Palace & Lawns"
+                      class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      onclick={`openLightbox('/static/images/${g.img}')`}
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <i class="fas fa-expand"></i>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Big 1 */}
+            <div class="gallery-item gallery-featured-big" data-category="hall">
+              <div class="group gallery-featured-tile gallery-featured-tile--big relative rounded-2xl overflow-hidden cursor-pointer h-full shadow-md hover:shadow-2xl transition-shadow">
+                <img
+                  loading="lazy"
+                  src="/static/images/hall-interior-red-chairs.jpg"
+                  alt="Raj Palace & Lawns"
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  onclick="openLightbox('/static/images/hall-interior-red-chairs.jpg')"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <i class="fas fa-expand"></i>
+                </div>
+              </div>
+            </div>
+
+            {/* Big 2 */}
+            <div class="gallery-item gallery-featured-big" data-category="wedding">
+              <div class="group gallery-featured-tile gallery-featured-tile--big relative rounded-2xl overflow-hidden cursor-pointer h-full shadow-md hover:shadow-2xl transition-shadow">
+                <img
+                  loading="lazy"
+                  src="/static/images/saptapadi-mandap.jpg"
+                  alt="Raj Palace & Lawns"
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  onclick="openLightbox('/static/images/saptapadi-mandap.jpg')"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <i class="fas fa-expand"></i>
+                </div>
+              </div>
+            </div>
+
+            {/* Right stack (2) */}
+            <div class="gallery-stack" data-gallery-stack="right">
+              {[
+                { img: 'entrance-lit.jpg', cat: 'night' },
+                { img: 'lawn-aerial.jpg', cat: 'lawn' }
+              ].map((g) => (
+                <div class="gallery-item" data-category={g.cat}>
+                  <div class="group gallery-featured-tile gallery-featured-tile--small relative rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-shadow">
+                    <img
+                      loading="lazy"
+                      src={`/static/images/${g.img}`}
+                      alt="Raj Palace & Lawns"
+                      class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      onclick={`openLightbox('/static/images/${g.img}')`}
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <i class="fas fa-expand"></i>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* More photos — Lawns (hidden initially) */}
+          <div id="gallery-grid-more" class="hidden mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            {[
+              // Hall
+              { img: 'hall-mixed-seating.jpg', cat: 'hall' },
               { img: 'dining-setup.jpg', cat: 'hall' },
+
+              // Lawns & Facade
+              { img: 'facade-day.jpg', cat: 'lawn' },
+              { img: 'facade-sky.jpg', cat: 'lawn' },
+              { img: 'facade-dusk.jpg', cat: 'lawn' },
+
+              // Night lighting
+              { img: 'welcome-gate.jpg', cat: 'night' },
               { img: 'event-crowd.jpg', cat: 'wedding' },
               { img: 'main-gate.jpg', cat: 'night' },
               { img: 'parking-night.jpg', cat: 'night' },
-              { img: 'facade-sky.jpg', cat: 'lawn' },
-              { img: 'facade-dusk.jpg', cat: 'lawn' }
+
+              // Weddings & setup
+              { img: 'haldi-decor.jpg', cat: 'wedding' }
             ].map((g) => (
-              <div class={`gallery-item ${g.span || ''}`} data-category={g.cat}>
-                <div class="group relative rounded-2xl overflow-hidden cursor-pointer aspect-square h-full shadow-md hover:shadow-2xl transition-shadow">
+              <div class="gallery-item" data-category={g.cat}>
+                <div class="group relative rounded-2xl overflow-hidden cursor-pointer aspect-square shadow-md hover:shadow-2xl transition-shadow">
                   <img
                     loading="lazy"
                     src={`/static/images/${g.img}`}
@@ -895,35 +1033,147 @@ export const HomePage = () => {
             ))}
           </div>
 
-          {/* Masonry Grid — Guest House (NEW, hidden by default) */}
-          <div id="gallery-grid-guesthouse" class="hidden grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {[
-              { img: 'gh-facade.jpg', label: 'Guest House Facade', span: 'col-span-2 row-span-2' },
-              { img: 'gh-king-room-1.jpg', label: 'Master King Room' },
-              { img: 'gh-king-room-2.jpg', label: 'Premium King Suite' },
-              { img: 'gh-double-room-1.jpg', label: 'Double Bed Room' },
-              { img: 'gh-double-room-2.jpg', label: 'Deluxe Double Room' },
-              { img: 'gh-interior-arch.jpg', label: 'Lobby Interior' }
-            ].map((g) => (
-              <div class={`gallery-item-gh ${g.span || ''}`}>
-                <div class="group relative rounded-2xl overflow-hidden cursor-pointer aspect-square h-full shadow-md hover:shadow-2xl transition-shadow">
+          {/* Featured grid — Guest House (hidden by default) */}
+          <div id="gallery-grid-guesthouse" class="hidden">
+            <div id="gallery-grid-guesthouse-featured" class="gallery-featured-grid">
+              {/* Left stack (2) */}
+              <div class="gallery-stack" data-gallery-stack="left">
+                {[
+                  { img: 'WhatsApp Image 2026-04-24 at 9.56.06 PM.jpeg', label: 'Guest House Photo', cat: 'rooms' },
+                  { img: 'WhatsApp Image 2026-04-24 at 9.56.11 PM.jpeg', label: 'Guest House Photo', cat: 'interior' }
+                ].map((g) => (
+                  <div class="gallery-item-gh" data-category={g.cat}>
+                    <div class="group gallery-featured-tile gallery-featured-tile--small relative rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-shadow">
+                      <img
+                        loading="lazy"
+                        src={`/static/images/${g.img}`}
+                        alt={g.label}
+                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onclick={`openLightbox('/static/images/${g.img}')`}
+                      />
+                      <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
+                      {/* label removed */}
+                      <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fas fa-expand text-xs"></i>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Big 1 */}
+              <div class="gallery-item-gh gallery-featured-big" data-category="facade">
+                <div class="group gallery-featured-tile gallery-featured-tile--big relative rounded-2xl overflow-hidden cursor-pointer h-full shadow-md hover:shadow-2xl transition-shadow">
                   <img
                     loading="lazy"
-                    src={`/static/images/guesthouse/${g.img}`}
-                    alt={g.label}
+                    src="/static/images/WhatsApp Image 2026-04-24 at 9.56.10 PM.jpeg"
+                    alt="Guest House Photo"
                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    onclick={`openLightbox('/static/images/guesthouse/${g.img}')`}
+                    onclick="openLightbox('/static/images/WhatsApp Image 2026-04-24 at 9.56.10 PM.jpeg')"
                   />
                   <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
-                  <div class="absolute bottom-3 left-3 right-3">
-                    <div class="text-white font-display text-sm md:text-base font-semibold drop-shadow-lg">{g.label}</div>
-                  </div>
+                  {/* label removed */}
                   <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <i class="fas fa-expand text-xs"></i>
                   </div>
                 </div>
               </div>
-            ))}
+
+              {/* Big 2 */}
+              <div class="gallery-item-gh gallery-featured-big" data-category="rooms">
+                <div class="group gallery-featured-tile gallery-featured-tile--big relative rounded-2xl overflow-hidden cursor-pointer h-full shadow-md hover:shadow-2xl transition-shadow">
+                  <img
+                    loading="lazy"
+                    src="/static/images/WhatsApp Image 2026-04-24 at 9.56.08 PM.jpeg"
+                    alt="Guest House Photo"
+                    class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    onclick="openLightbox('/static/images/WhatsApp Image 2026-04-24 at 9.56.08 PM.jpeg')"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
+                  {/* label removed */}
+                  <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i class="fas fa-expand text-xs"></i>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right stack (2) */}
+              <div class="gallery-stack" data-gallery-stack="right">
+                {[
+                  { img: 'WhatsApp Image 2026-04-24 at 9.56.06 PM (1).jpeg', label: 'Guest House Photo', cat: 'rooms' },
+                  { img: 'WhatsApp Image 2026-04-24 at 9.56.07 PM.jpeg', label: 'Guest House Photo', cat: 'rooms' }
+                ].map((g) => (
+                  <div class="gallery-item-gh" data-category={g.cat}>
+                    <div class="group gallery-featured-tile gallery-featured-tile--small relative rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-shadow">
+                      <img
+                        loading="lazy"
+                        src={`/static/images/${g.img}`}
+                        alt={g.label}
+                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onclick={`openLightbox('/static/images/${g.img}')`}
+                      />
+                      <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
+                      {/* label removed */}
+                      <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fas fa-expand text-xs"></i>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div id="gallery-grid-guesthouse-more" class="hidden mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              {[
+                // Use WhatsApp photos only (guesthouse folder not present)
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.10 PM.jpeg', label: 'Guest House Photo', cat: 'facade', dir: 'root' },
+
+                // WhatsApp uploads (stored in /static/images)
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.03 PM.jpeg', label: 'Guest House Photo', cat: 'rooms', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.04 PM.jpeg', label: 'Guest House Photo', cat: 'rooms', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.05 PM.jpeg', label: 'Guest House Photo', cat: 'rooms', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.06 PM.jpeg', label: 'Guest House Photo', cat: 'rooms', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.06 PM (1).jpeg', label: 'Guest House Photo', cat: 'rooms', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.07 PM.jpeg', label: 'Guest House Photo', cat: 'interior', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.07 PM (1).jpeg', label: 'Guest House Photo', cat: 'interior', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.08 PM.jpeg', label: 'Guest House Photo', cat: 'rooms', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.08 PM (1).jpeg', label: 'Guest House Photo', cat: 'rooms', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.09 PM.jpeg', label: 'Guest House Photo', cat: 'facade', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.10 PM.jpeg', label: 'Guest House Photo', cat: 'facade', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.11 PM.jpeg', label: 'Guest House Photo', cat: 'interior', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.11 PM (1).jpeg', label: 'Guest House Photo', cat: 'rooms', dir: 'root' },
+                { img: 'WhatsApp Image 2026-04-24 at 9.56.13 PM.jpeg', label: 'Guest House Photo', cat: 'interior', dir: 'root' }
+              ].map((g) => (
+                <div class="gallery-item-gh" data-category={g.cat}>
+                  <div class="group relative rounded-2xl overflow-hidden cursor-pointer aspect-square shadow-md hover:shadow-2xl transition-shadow">
+                    <img
+                      loading="lazy"
+                      src={encodeURI(`/static/images/${g.img}`)}
+                      alt={g.label}
+                      class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      onclick={`openLightbox('${encodeURI(`/static/images/${g.img}`)}')`}
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-maroondark/80 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
+                    {/* label removed */}
+                    <div class="absolute top-3 right-3 w-9 h-9 rounded-full bg-gold/90 text-maroon flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <i class="fas fa-expand text-xs"></i>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Load more */}
+          <div class="flex justify-center mt-8 reveal-up">
+            <button
+              id="gallery-load-more"
+              type="button"
+              class="px-8 py-3 rounded-full bg-maroon text-gold font-semibold hover:bg-maroondark transition shadow-xl"
+            >
+              <i class="fas fa-plus mr-2"></i>
+              Load More Photos
+            </button>
           </div>
         </div>
 
@@ -946,7 +1196,7 @@ export const HomePage = () => {
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="text-center mb-16 reveal-up">
             <span class="inline-block text-gold text-sm tracking-[0.3em] uppercase font-medium mb-4">
-              ✦ Wedding Stories ✦
+              ✦ Wedding & Stay Stories ✦
             </span>
             <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
               Loved by <em class="text-gold italic">Hundreds of Families</em>
@@ -1006,22 +1256,22 @@ export const HomePage = () => {
 
           <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-14 reveal-up">
             <a
-              href="https://www.instagram.com/raj_palace_lawns"
-              target="_blank"
-              rel="noopener"
-              class="flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white font-semibold hover:scale-105 transition shadow-xl"
-            >
-              <i class="fab fa-instagram text-xl"></i>
-              See More on Instagram
-            </a>
-            <a
               href="https://share.google/cZCukpQ7jfPJYxF4F"
               target="_blank"
               rel="noopener"
               class="flex items-center gap-3 px-6 py-3 rounded-full border-2 border-gold text-gold font-semibold hover:bg-gold hover:text-maroon transition"
             >
               <i class="fab fa-google"></i>
-              Read Google Reviews
+              Lawns Google Reviews
+            </a>
+            <a
+              href="https://share.google/cZCukpQ7jfPJYxF4F"
+              target="_blank"
+              rel="noopener"
+              class="flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-gold to-goldlight text-maroon font-semibold hover:scale-105 transition shadow-xl"
+            >
+              <i class="fab fa-google"></i>
+              Guest House Google Reviews
             </a>
           </div>
         </div>
@@ -1156,8 +1406,9 @@ export const HomePage = () => {
             <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
             Limited Wedding Dates Available
           </div>
-          <h2 class="reveal-up font-display text-white text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
-            Secure Your Perfect <em class="text-gold italic">Wedding Date</em>
+          <h2 class="reveal-up font-display text-white text-4xl md:text-5xl lg:text-5xl font-bold mb-5 leading-none">
+            Secure Your Perfect Wedding at Our
+            <em class="block mt-2 text-gold italic">Lawns &amp; Guest House</em>
           </h2>
           <p class="reveal-up text-ivory/85 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
             Premium dates for the 2026 &amp; 2027 wedding season are filling up fast. Reserve yours today.
@@ -1189,7 +1440,7 @@ export const HomePage = () => {
               ✦ Visit Us ✦
             </span>
             <h2 class="font-display text-maroon text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
-              Let's Plan Your <em class="text-gold italic">Royal Wedding</em>
+              Let's Plan Your <em class="text-gold italic">Royal Wedding & Stay</em>
             </h2>
             <p class="text-maroon/70 text-lg max-w-2xl mx-auto">
               Reach out, schedule a venue visit, or start a conversation on WhatsApp.
@@ -1279,7 +1530,7 @@ export const HomePage = () => {
                 width="100%"
                 height="100%"
                 style="border:0; min-height:500px;"
-                allowfullscreen=""
+                allowfullscreen
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
                 title="Raj Palace & Lawns Location"
@@ -1304,14 +1555,16 @@ export const HomePage = () => {
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
             {/* Brand */}
             <div class="lg:col-span-1">
-              <div class="flex items-center gap-3 mb-4">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-golddark flex items-center justify-center shadow-lg">
-                  <i class="fas fa-crown text-white text-xl"></i>
+              <div class="flex flex-col items-center text-center mb-4">
+                <div class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center shadow-lg ring-2 ring-gold/30 overflow-hidden mb-3">
+                  <img
+                    src={encodeURI('/static/images/logo raj palace.jpg.jpeg')}
+                    alt="Raj Palace Logo"
+                    class="w-full h-full object-cover"
+                  />
                 </div>
-                <div>
-                  <div class="font-display text-xl font-bold text-white">Raj Palace</div>
-                  <div class="text-[10px] tracking-[0.2em] uppercase text-gold">&amp; Lawns</div>
-                </div>
+                <div class="font-display text-2xl font-bold text-white leading-tight">Raj Palace</div>
+                <div class="text-[10px] tracking-[0.2em] uppercase text-gold mt-1">LAWNS &amp; GUEST HOUSE</div>
               </div>
               <p class="text-ivory/70 text-sm leading-relaxed">
                 A luxury 5000-guest wedding venue in Yeola, Nashik — combining royal indoor halls with expansive green lawns for unforgettable celebrations.

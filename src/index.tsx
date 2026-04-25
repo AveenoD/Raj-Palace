@@ -4,6 +4,9 @@ import { renderer } from './renderer'
 import { HomePage } from './pages/home'
 import { AdminLoginPage, AdminDashboardPage } from './pages/admin'
 
+// Keep KV typing lightweight for non-Cloudflare runtimes (e.g., Vercel).
+type KVNamespace = any
+
 type Bindings = {
   BOOKINGS_KV: KVNamespace
   ADMIN_USERNAME: string
@@ -75,9 +78,9 @@ app.get('/', (c) => {
 
 app.get('/admin', (c) => {
   if (checkAuth(c)) {
-    return c.render(<AdminDashboardPage />, { title: 'Admin Dashboard — Raj Palace LAWNS & GUEST HOUSE' })
+    return (c as any).render(<AdminDashboardPage />, { title: 'Admin Dashboard — Raj Palace LAWNS & GUEST HOUSE' })
   }
-  return c.render(<AdminLoginPage />, { title: 'Admin Login — Raj Palace LAWNS & GUEST HOUSE' })
+  return (c as any).render(<AdminLoginPage />, { title: 'Admin Login — Raj Palace LAWNS & GUEST HOUSE' })
 })
 
 /* ---------- Public API: Availability ---------- */
@@ -106,7 +109,7 @@ app.get('/api/availability', async (c) => {
 // POST /api/enquiries — Submit enquiry from public site
 app.post('/api/enquiries', async (c) => {
   const body = await c.req.json().catch(() => ({}))
-  const { name, phone, date, guests, message, bookingType, roomType, numRooms } = body
+  const { name, phone, date, guests, message, bookingType, roomType, numRooms, checkoutDate } = body
 
   if (!name || !phone) {
     return c.json({ ok: false, error: 'Name and phone are required.' }, 400)
@@ -124,6 +127,7 @@ app.post('/api/enquiries', async (c) => {
     bookingType: normType,
     roomType: roomType ? String(roomType).trim().slice(0, 40) : '',
     numRooms: numRooms ? String(numRooms).trim().slice(0, 10) : '',
+    checkoutDate: checkoutDate ? String(checkoutDate).trim().slice(0, 20) : '',
     createdAt: new Date().toISOString(),
     status: 'new'
   }
