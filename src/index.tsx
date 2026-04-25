@@ -24,10 +24,13 @@ app.use(renderer)
 // for a single-admin venue panel. Production: swap for hono/jwt.
 const ADMIN_COOKIE = 'rp_admin_session'
 
+const envOf = (c: any) => (c && c.env ? c.env : {})
+
 const checkAuth = (c: any): boolean => {
   const token = getCookie(c, ADMIN_COOKIE)
   if (!token) return false
-  const expected = `rp_${c.env.ADMIN_USERNAME || 'admin'}_ok`
+  const env = envOf(c)
+  const expected = `rp_${env.ADMIN_USERNAME || 'admin'}_ok`
   return token === expected
 }
 
@@ -43,8 +46,9 @@ const memoryStore = new Map<string, string>()
 
 const kvGet = async (c: any, key: string): Promise<string | null> => {
   try {
-    if (c.env.BOOKINGS_KV) {
-      return await c.env.BOOKINGS_KV.get(key)
+    const env = envOf(c)
+    if (env.BOOKINGS_KV) {
+      return await env.BOOKINGS_KV.get(key)
     }
   } catch (e) {}
   return memoryStore.get(key) ?? null
@@ -52,8 +56,9 @@ const kvGet = async (c: any, key: string): Promise<string | null> => {
 
 const kvPut = async (c: any, key: string, value: string) => {
   try {
-    if (c.env.BOOKINGS_KV) {
-      await c.env.BOOKINGS_KV.put(key, value)
+    const env = envOf(c)
+    if (env.BOOKINGS_KV) {
+      await env.BOOKINGS_KV.put(key, value)
       return
     }
   } catch (e) {}
@@ -62,8 +67,9 @@ const kvPut = async (c: any, key: string, value: string) => {
 
 const kvList = async (c: any, prefix: string): Promise<string[]> => {
   try {
-    if (c.env.BOOKINGS_KV) {
-      const res = await c.env.BOOKINGS_KV.list({ prefix })
+    const env = envOf(c)
+    if (env.BOOKINGS_KV) {
+      const res = await env.BOOKINGS_KV.list({ prefix })
       return res.keys.map((k: any) => k.name)
     }
   } catch (e) {}
@@ -141,8 +147,9 @@ app.post('/api/enquiries', async (c) => {
 app.post('/api/admin/login', async (c) => {
   const body = await c.req.json().catch(() => ({}))
   const { username, password } = body
-  const envUser = c.env.ADMIN_USERNAME || 'admin'
-  const envPass = c.env.ADMIN_PASSWORD || 'rajpalace2026'
+  const env = envOf(c)
+  const envUser = env.ADMIN_USERNAME || 'admin'
+  const envPass = env.ADMIN_PASSWORD || 'rajpalace2026'
 
   if (username === envUser && password === envPass) {
     const token = `rp_${envUser}_ok`
@@ -189,7 +196,8 @@ app.post('/api/admin/dates', requireAuth, async (c) => {
   if (status === 'available') {
     // "Available" = default, so delete the key
     try {
-      if (c.env.BOOKINGS_KV) await c.env.BOOKINGS_KV.delete(`date:${date}`)
+      const env = envOf(c)
+      if (env.BOOKINGS_KV) await env.BOOKINGS_KV.delete(`date:${date}`)
     } catch (e) {}
     memoryStore.delete(`date:${date}`)
   } else {
