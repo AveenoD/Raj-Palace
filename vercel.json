@@ -4,11 +4,8 @@
     { "src": "api/index.ts", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "^/static/(.*)$", "dest": "/public/static/$1" },
-    { "src": "^/favicon\\.svg$", "dest": "/public/favicon.svg" },
-    { "src": "^/favicon\\.ico$", "dest": "/public/favicon.ico" },
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/api/index.ts" }
+    { "src": "/(.*)", "dest": "/api/index" }
   ]
 }
 
