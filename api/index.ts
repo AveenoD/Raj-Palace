@@ -1,5 +1,5 @@
 import { handle } from '@hono/node-server/vercel'
-import app from '../src/index'
+import app from '../src/index.tsx'
 
 const handler = handle(app)
 
