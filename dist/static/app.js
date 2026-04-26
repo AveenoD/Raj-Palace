@@ -538,6 +538,8 @@
   const galleryGridLawnsMore = document.getElementById('gallery-grid-more');
   const galleryGridGH = document.getElementById('gallery-grid-guesthouse');
   const galleryGridGHMore = document.getElementById('gallery-grid-guesthouse-more');
+  const galleryMobileLawns = document.getElementById('gallery-mobile-preview-lawns');
+  const galleryMobileGH = document.getElementById('gallery-mobile-preview-guesthouse');
   const galleryCatTabs = document.getElementById('gallery-category-tabs');
   const galleryCatTabsGH = document.getElementById('gallery-category-tabs-guesthouse');
   const galleryLoadMoreBtn = document.getElementById('gallery-load-more');
@@ -604,6 +606,8 @@
 
       if (venue === 'guesthouse') {
         if (galleryGridLawns) galleryGridLawns.classList.add('hidden');
+        if (galleryMobileLawns) galleryMobileLawns.classList.add('hidden');
+        if (galleryMobileGH) galleryMobileGH.classList.remove('hidden');
         if (galleryGridGH) {
           galleryGridGH.classList.remove('hidden');
           galleryGridGH.classList.add('grid');
@@ -612,6 +616,8 @@
         if (galleryCatTabsGH) galleryCatTabsGH.classList.remove('hidden');
       } else {
         if (galleryGridLawns) galleryGridLawns.classList.remove('hidden');
+        if (galleryMobileLawns) galleryMobileLawns.classList.remove('hidden');
+        if (galleryMobileGH) galleryMobileGH.classList.add('hidden');
         if (galleryGridGH) {
           galleryGridGH.classList.add('hidden');
           galleryGridGH.classList.remove('grid');

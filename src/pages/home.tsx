@@ -906,8 +906,45 @@ export const HomePage = () => {
             ))}
           </div>
 
-          {/* Featured grid — Lawns (stack + big + big + stack) */}
-          <div id="gallery-grid" class="gallery-featured-grid">
+          {/* Mobile preview (show 2 photos before Load More) */}
+          <div id="gallery-mobile-preview-lawns" class="md:hidden grid grid-cols-2 gap-3 mb-6 reveal-up">
+            {[
+              { img: 'saptapadi-mandap.jpg', alt: 'Wedding Setup' },
+              { img: 'entrance-lit.jpg', alt: 'Night Lighting' }
+            ].map((g) => (
+              <div class="group relative rounded-2xl overflow-hidden aspect-square shadow-md hover:shadow-2xl cursor-pointer">
+                <img
+                  loading="lazy"
+                  src={`/static/images/${g.img}`}
+                  alt={g.alt}
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  onclick={`openLightbox('/static/images/${g.img}')`}
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-maroondark/70 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
+              </div>
+            ))}
+          </div>
+
+          <div id="gallery-mobile-preview-guesthouse" class="hidden md:hidden grid grid-cols-2 gap-3 mb-6 reveal-up">
+            {[
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.10 PM.jpeg?v=2', alt: 'Guest House' },
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.08 PM.jpeg?v=2', alt: 'Guest Room' }
+            ].map((g) => (
+              <div class="group relative rounded-2xl overflow-hidden aspect-square shadow-md hover:shadow-2xl cursor-pointer">
+                <img
+                  loading="lazy"
+                  src={encodeURI(`/static/images/${g.img}`)}
+                  alt={g.alt}
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  onclick={`openLightbox('${encodeURI(`/static/images/${g.img}`)}')`}
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-maroondark/70 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity"></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Featured grid — Lawns (desktop only; avoids big gaps on mobile) */}
+          <div id="gallery-grid" class="hidden md:grid gallery-featured-grid">
             {/* Left stack (2) */}
             <div class="gallery-stack" data-gallery-stack="left">
               {[
@@ -1030,9 +1067,9 @@ export const HomePage = () => {
             ))}
           </div>
 
-          {/* Featured grid — Guest House (hidden by default) */}
+          {/* Featured grid — Guest House (desktop only; hidden by default) */}
           <div id="gallery-grid-guesthouse" class="hidden">
-            <div id="gallery-grid-guesthouse-featured" class="gallery-featured-grid">
+            <div id="gallery-grid-guesthouse-featured" class="hidden md:grid gallery-featured-grid">
               {/* Left stack (2) */}
               <div class="gallery-stack" data-gallery-stack="left">
                 {[
