@@ -906,11 +906,15 @@ export const HomePage = () => {
             ))}
           </div>
 
-          {/* Mobile preview (show 2 photos before Load More) */}
+          {/* Mobile preview (show 6 photos before Load More) */}
           <div id="gallery-mobile-preview-lawns" class="md:hidden grid grid-cols-2 gap-3 mb-6 reveal-up">
             {[
               { img: 'saptapadi-mandap.jpg', alt: 'Wedding Setup' },
-              { img: 'entrance-lit.jpg', alt: 'Night Lighting' }
+              { img: 'entrance-lit.jpg', alt: 'Night Lighting' },
+              { img: 'hall-interior-red-chairs.jpg', alt: 'Indoor Hall' },
+              { img: 'lawn-aerial.jpg', alt: 'Lawns & Facade' },
+              { img: 'haldi-decor.jpg', alt: 'Wedding Decor' },
+              { img: 'welcome-gate.jpg', alt: 'Welcome Gate' }
             ].map((g) => (
               <div class="group relative rounded-2xl overflow-hidden aspect-square shadow-md hover:shadow-2xl cursor-pointer">
                 <img
@@ -928,7 +932,11 @@ export const HomePage = () => {
           <div id="gallery-mobile-preview-guesthouse" class="hidden md:hidden grid grid-cols-2 gap-3 mb-6 reveal-up">
             {[
               { img: 'WhatsApp Image 2026-04-24 at 9.56.10 PM.jpeg?v=2', alt: 'Guest House' },
-              { img: 'WhatsApp Image 2026-04-24 at 9.56.08 PM.jpeg?v=2', alt: 'Guest Room' }
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.08 PM.jpeg?v=2', alt: 'Guest Room' },
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.04 PM.jpeg?v=2', alt: 'Guest Room' },
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.05 PM.jpeg?v=2', alt: 'Guest Room' },
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.07 PM.jpeg?v=2', alt: 'Guest House Interior' },
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.11 PM.jpeg?v=2', alt: 'Guest House Interior' }
             ].map((g) => (
               <div class="group relative rounded-2xl overflow-hidden aspect-square shadow-md hover:shadow-2xl cursor-pointer">
                 <img
