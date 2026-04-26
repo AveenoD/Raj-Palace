@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "deploy": "npm run deploy:pages",
     "deploy:pages": "npm run build && wrangler pages deploy ./dist --project-name rajpalace",
     "start": "vite"
   },
