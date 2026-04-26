@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node -e \"console.log('No build step required for Vercel Functions')\"",
+    "build": "vite build",
     "start": "vite"
   },
   "dependencies": {
