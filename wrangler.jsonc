@@ -1,11 +1,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "raj-palace-lawns",
+  "name": "rajpalace",
   "compatibility_date": "2026-04-13",
   "pages_build_output_dir": "./dist",
-  "assets": {
-    "directory": "./dist"
-  },
   "compatibility_flags": [
     "nodejs_compat"
   ],
