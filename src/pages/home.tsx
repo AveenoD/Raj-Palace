@@ -316,7 +316,7 @@ export const HomePage = () => {
             <div class="reveal-up relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] border-4 border-gold/20">
               <img
                 loading="lazy"
-                src="/static/images/guestRoom.jpeg"
+                src="/static/images/guestRoom.jpeg?v=2"
                 alt="Raj Palace Guest House facade"
                 class="absolute inset-0 w-full h-full object-cover"
               />
@@ -418,11 +418,11 @@ export const HomePage = () => {
           {/* Room Gallery Preview */}
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 reveal-up">
             {[
-              { img: 'WhatsApp Image 2026-04-24 at 9.56.08 PM (1).jpeg', label: 'Master King Room' },
-              { img: 'WhatsApp Image 2026-04-24 at 9.56.03 PM.jpeg', label: 'Premium Suite' },
-              { img: 'WhatsApp Image 2026-04-24 at 9.56.04 PM.jpeg', label: 'Double Bed Room' },
-              { img: 'WhatsApp Image 2026-04-24 at 9.56.05 PM.jpeg', label: 'Deluxe Double' },
-              { img: 'WhatsApp Image 2026-04-24 at 9.56.07 PM.jpeg', label: 'Lobby Interior' }
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.08 PM (1).jpeg?v=2', label: 'Master King Room' },
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.03 PM.jpeg?v=2', label: 'Premium Suite' },
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.04 PM.jpeg?v=2', label: 'Double Bed Room' },
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.05 PM.jpeg?v=2', label: 'Deluxe Double' },
+              { img: 'WhatsApp Image 2026-04-24 at 9.56.07 PM.jpeg?v=2', label: 'Lobby Interior' }
             ].map((r) => (
               <div class="group relative rounded-2xl overflow-hidden aspect-square shadow-md hover:shadow-2xl cursor-pointer" onclick={`openLightbox('${encodeURI(`/static/images/${r.img}`)}')`}>
                 <img loading="lazy" src={encodeURI(`/static/images/${r.img}`)} alt={r.label} class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
